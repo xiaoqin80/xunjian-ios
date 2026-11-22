@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>经页 · 慈爱</title><style>
+:root{--paper:#F7F2E8;--paper2:#FCF9F2;--ink:#26231E;--ink2:#5D574C;--ink3:#93897A;
+--line:#E4DBC9;--brass:#8A6A3B;--brass2:#B5924F;
+--serif:"Noto Serif SC","Songti SC",STSong,SimSun,serif;--sans:"PingFang SC","Microsoft YaHei",sans-serif}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{background:#191713;display:flex;justify-content:center;font-family:var(--sans)}
+.phone{width:390px;height:844px;background:var(--paper);position:relative;overflow:hidden;display:flex;flex-direction:column;
+ box-shadow:0 24px 60px rgba(0,0,0,.45),0 0 0 9px #2A2723,0 0 0 10px #3A362F;border-radius:38px}
+.status{height:30px;flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:11px;color:var(--ink3)}
+.top{flex:0 0 auto;padding:2px 20px 8px;border-bottom:1px solid var(--line)}
+.tline{display:flex;align-items:center;gap:10px}
+.back{width:26px;height:26px;display:flex;align-items:center;justify-content:center;color:var(--brass);font-size:19px;cursor:pointer}
+.wd{font-family:var(--serif);font-size:25px;letter-spacing:4px}
+.wp{font-family:Georgia,serif;font-size:10px;color:var(--brass);letter-spacing:1.5px;margin-top:1px}
+.wno{margin-left:auto;font-size:9.5px;color:var(--ink3);letter-spacing:1.5px}
+.sum{display:flex;gap:11px;margin-top:7px;font-size:10px;color:var(--ink3);letter-spacing:.4px;align-items:baseline}
+.sum b{color:var(--ink);font-size:13px;font-weight:600;margin-right:2px;font-variant-numeric:tabular-nums}
+.filters{flex:0 0 auto;display:flex;gap:6px;overflow-x:auto;padding:9px 20px 8px;scrollbar-width:none;
+  cursor:grab;-webkit-overflow-scrolling:touch;scroll-behavior:smooth;
+  mask-image:linear-gradient(90deg,#000 94%,transparent);-webkit-mask-image:linear-gradient(90deg,#000 94%,transparent)}
+.filters::-webkit-scrollbar{display:none}
+.filters.grabbing{cursor:grabbing;scroll-behavior:auto}
+.fchip{flex:0 0 auto;padding:5px 11px;border:1px solid var(--line);border-radius:999px;background:var(--paper2);
+font-size:11px;color:var(--ink2);white-space:nowrap;cursor:pointer;transition:all .16s}
+.fchip.on{background:var(--brass);border-color:var(--brass);color:#fff}
+.body{flex:1 1 auto;overflow-y:auto;padding:2px 20px 40px}
+.h2{font-family:var(--serif);font-size:13px;letter-spacing:2px;color:var(--ink);margin:14px 0 8px;display:flex;align-items:center;gap:8px}
+.h2:before{content:"";width:14px;height:2px;background:var(--brass);opacity:.6;border-radius:2px}
+.sense{background:var(--paper2);border:1px solid var(--line);border-radius:12px;padding:11px 12px;margin-bottom:9px}
+.sh{font-size:12px;color:var(--ink);letter-spacing:.5px;margin-bottom:5px}
+.sh .k{color:var(--brass);font-family:Georgia,serif;margin-right:5px}
+.sd{font-size:10.5px;color:var(--ink3);line-height:1.85;margin-bottom:7px}
+.sv{padding:7px 0;border-top:1px dashed rgba(228,219,201,.9)}
+.svr{font-size:9.5px;color:var(--brass);letter-spacing:1.2px;margin-bottom:3px}
+.svt{font-family:var(--serif);font-size:12px;line-height:1.95;color:var(--ink)}
+.grp{margin-bottom:4px}
+.grp h4{font-family:var(--serif);font-size:12px;color:var(--ink);letter-spacing:1.5px;
+  padding:10px 0 6px;border-bottom:1px solid var(--line);display:flex;align-items:baseline}
+.grp h4 i{margin-left:auto;font-style:normal;font-size:9px;color:var(--ink3);letter-spacing:1px}
+.v{display:flex;gap:9px;padding:8px 0;border-bottom:1px solid rgba(228,219,201,.55);cursor:pointer;align-items:flex-start}
+.v:active{background:#F1E9D9}
+.v .go{margin-left:auto;color:#C0B4A0;font-size:12px;padding-top:2px}
+.vr{flex:0 0 60px;font-size:9.5px;color:var(--brass);letter-spacing:.8px;padding-top:3px;font-variant-numeric:tabular-nums}
+.vt{flex:1;font-family:var(--serif);font-size:12px;line-height:1.95;color:var(--ink2)}
+.kw{font-style:normal;color:var(--brass);font-weight:600;background:rgba(181,146,79,.13);border-radius:3px;padding:0 1px}
+
+.hint{font-size:10px;color:var(--ink3);text-align:center;padding:14px 0 6px;letter-spacing:1px}
+</style></head>
+<body><div class="phone">
+  <div class="status"><span>9:41</span><span style="width:14px;height:7px;border:1px solid var(--ink3);border-radius:2px;opacity:.7"></span></div>
+  <div class="top">
+    <div class="tline"><div class="back">‹</div>
+      <div><div class="wd">慈爱</div><div class="wp">cí ài · 名词</div></div>
+      <div class="wno">词卡 W1168</div></div>
+    <div class="sum"><span><b>197</b>次</span><span><b>194</b>节</span>
+      <span><b>31</b>卷</span><span><b>112</b>章</span><span>旧约 188 · 新约 6</span></div>
+  </div>
+  <div class="filters" id="f">
+    <div class="fchip on" data-k="all">全部 194</div>
+    <div class="fchip" data-k="ot">旧约 188</div>
+    <div class="fchip" data-k="nt">新约 6</div>
+    <div class="fchip" data-k="s1">① 守约之爱</div>
+    <div class="fchip" data-k="s2">② 搭救之恩</div>
+    <div class="fchip" data-k="s3">③ 以爱相待</div>
+  </div>
+  <div class="body" id="body">
+    <div class="h2">义项导读</div>
+    <div class="sense"><div class="sh"><span class="k">①</span>神守约不变的爱</div><div class="sd">chesed 的核心：立约的一方守住承诺，不因对方失信而收回。诗篇 136 用同一句副歌贯穿全篇 26 节。</div><div class="sv"><div class="svr">诗篇 136:1</div><div class="svt">你们要称谢耶和华，因他本为善；他的<em class="kw">慈爱</em>永远长存。</div></div><div class="sv"><div class="svr">诗篇 103:17</div><div class="svt">但耶和华的<em class="kw">慈爱</em>归于敬畏他的人，从亘古到永远；他的公义也归于子子孙孙─</div></div><div class="sv"><div class="svr">出埃及记 34:6</div><div class="svt">耶和华在他面前宣告说：“耶和华，耶和华，是有怜悯有恩典的神，不轻易发怒，并有丰盛的<em class="kw">慈爱</em>和诚实，</div></div></div><div class="sense"><div class="sh"><span class="k">②</span>神施行搭救的慈爱</div><div class="sd">慈爱不是情绪，而是行动：在危难中伸手救人、在审判中留出路。</div><div class="sv"><div class="svr">创世记 19:19</div><div class="svt">你仆人已经在你眼前蒙恩；你又向我显出莫大的<em class="kw">慈爱</em>，救我的性命。我不能逃到山上去，恐怕这灾祸临到我，我便死了。</div></div><div class="sv"><div class="svr">诗篇 31:16</div><div class="svt">求你使你的脸光照仆人，凭你的<em class="kw">慈爱</em>拯救我。</div></div><div class="sv"><div class="svr">耶利米哀歌 3:22</div><div class="svt">我们不致消灭，是出于耶和华诸般的<em class="kw">慈爱</em>；是因他的怜悯不致断绝。</div></div></div><div class="sense"><div class="sh"><span class="k">③</span>人以立约之爱相待</div><div class="sd">人之间的「慈爱」常带「照耶和华的慈爱」这一前提——把神守约的爱复制进人际关系。</div><div class="sv"><div class="svr">撒母耳记上 20:14</div><div class="svt">你要照耶和华的<em class="kw">慈爱</em>恩待我，不但我活着的时候免我死亡，</div></div><div class="sv"><div class="svr">撒母耳记下 2:6</div><div class="svt">你们既行了这事，愿耶和华以<em class="kw">慈爱</em>诚实待你们，我也要为此厚待你们。</div></div><div class="sv"><div class="svr">创世记 32:10</div><div class="svt">你向仆人所施的一切<em class="kw">慈爱</em>和诚实，我一点也不配得；我先前只拿着我的杖过这约旦河，如今我却成了两队了。</div></div></div>
+    <div class="h2">全部经文 · 按卷</div>
+    <div id="list"></div>
+    <div class="hint">— 共 197 次，逐节取自和合本 —</div>
+  </div>
+</div>
+<script>
+const V = [{"b": 0, "bn": "创世记", "ab": "创", "c": 19, "v": 19, "t": "你仆人已经在你眼前蒙恩；你又向我显出莫大的慈爱，救我的性命。我不能逃到山上去，恐怕这灾祸临到我，我便死了。"}, {"b": 0, "bn": "创世记", "ab": "创", "c": 24, "v": 27, "t": "说：“耶和华─我主人亚伯拉罕的神是应当称颂的，因他不断地以慈爱诚实待我主人。至于我，耶和华在路上引领我，直走到我主人的兄弟家里。”"}, {"b": 0, "bn": "创世记", "ab": "创", "c": 24, "v": 49, "t": "现在你们若愿以慈爱诚实待我主人，就告诉我；若不然，也告诉我，使我可以或向左，或向右。”"}, {"b": 0, "bn": "创世记", "ab": "创", "c": 32, "v": 10, "t": "你向仆人所施的一切慈爱和诚实，我一点也不配得；我先前只拿着我的杖过这约旦河，如今我却成了两队了。"}, {"b": 0, "bn": "创世记", "ab": "创", "c": 47, "v": 29, "t": "以色列的死期临近了，他就叫了他儿子约瑟来，说：“我若在你眼前蒙恩，请你把手放在我大腿底下，用慈爱和诚实待我，请你不要将我葬在埃及。"}, {"b": 1, "bn": "出埃及记", "ab": "出", "c": 15, "v": 13, "t": "你凭慈爱领了你所赎的百姓；你凭能力引他们到了你的圣所。"}, {"b": 1, "bn": "出埃及记", "ab": "出", "c": 20, "v": 6, "t": "爱我、守我诫命的，我必向他们发慈爱，直到千代。"}, {"b": 1, "bn": "出埃及记", "ab": "出", "c": 34, "v": 6, "t": "耶和华在他面前宣告说：“耶和华，耶和华，是有怜悯有恩典的神，不轻易发怒，并有丰盛的慈爱和诚实，"}, {"b": 1, "bn": "出埃及记", "ab": "出", "c": 34, "v": 7, "t": "为千万人存留慈爱，赦免罪孽、过犯，和罪恶，万不以有罪的为无罪，必追讨他的罪，自父及子，直到三、四代。”"}, {"b": 3, "bn": "民数记", "ab": "民", "c": 14, "v": 18, "t": "‘耶和华不轻易发怒，并有丰盛的慈爱，赦免罪孽和过犯；万不以有罪的为无罪，必追讨他的罪，自父及子，直到三、四代。’"}, {"b": 3, "bn": "民数记", "ab": "民", "c": 14, "v": 19, "t": "求你照你的大慈爱赦免这百姓的罪孽，好像你从埃及到如今常赦免他们一样。”"}, {"b": 4, "bn": "申命记", "ab": "申", "c": 5, "v": 10, "t": "爱我、守我诫命的，我必向他们发慈爱，直到千代。"}, {"b": 4, "bn": "申命记", "ab": "申", "c": 7, "v": 9, "t": "所以，你要知道耶和华─你的神，他是神，是信实的神；向爱他、守他诫命的人守约，施慈爱，直到千代；"}, {"b": 4, "bn": "申命记", "ab": "申", "c": 7, "v": 12, "t": "“你们果然听从这些典章，谨守遵行，耶和华─你神就必照他向你列祖所起的誓守约，施慈爱。"}, {"b": 5, "bn": "约书亚记", "ab": "书", "c": 2, "v": 14, "t": "二人对她说：“你若不泄漏我们这件事，我们情愿替你们死。耶和华将这地赐给我们的时候，我们必以慈爱诚实待你。”"}, {"b": 7, "bn": "路得记", "ab": "得", "c": 2, "v": 13, "t": "路得说：“我主啊，愿在你眼前蒙恩。我虽然不及你的一个使女，你还用慈爱的话安慰我的心。”"}, {"b": 8, "bn": "撒母耳记上", "ab": "撒上", "c": 20, "v": 14, "t": "你要照耶和华的慈爱恩待我，不但我活着的时候免我死亡，"}, {"b": 9, "bn": "撒母耳记下", "ab": "撒下", "c": 2, "v": 6, "t": "你们既行了这事，愿耶和华以慈爱诚实待你们，我也要为此厚待你们。"}, {"b": 9, "bn": "撒母耳记下", "ab": "撒下", "c": 7, "v": 15, "t": "但我的慈爱仍不离开他，像离开在你面前所废弃的扫罗一样。"}, {"b": 9, "bn": "撒母耳记下", "ab": "撒下", "c": 9, "v": 3, "t": "王说：“扫罗家还有人没有？我要照神的慈爱恩待他。”洗巴对王说：“还有约拿单的一个儿子，是瘸腿的。”"}, {"b": 9, "bn": "撒母耳记下", "ab": "撒下", "c": 15, "v": 20, "t": "你来的日子不多，我今日怎好叫你与我们一同飘流、没有一定的住处呢？你不如带你的弟兄回去吧！愿耶和华用慈爱诚实待你。”"}, {"b": 9, "bn": "撒母耳记下", "ab": "撒下", "c": 22, "v": 26, "t": "慈爱的人，你以慈爱待他；完全的人，你以完全待他；"}, {"b": 9, "bn": "撒母耳记下", "ab": "撒下", "c": 22, "v": 51, "t": "耶和华赐极大的救恩给他所立的王，施慈爱给他的受膏者，就是给大卫和他的后裔，直到永远！"}, {"b": 10, "bn": "列王纪上", "ab": "王上", "c": 8, "v": 23, "t": "“耶和华─以色列的神啊，天上地下没有神可比你的！你向那尽心行在你面前的仆人守约施慈爱；"}, {"b": 12, "bn": "历代志上", "ab": "代上", "c": 16, "v": 34, "t": "应当称谢耶和华；因他本为善，他的慈爱永远长存！"}, {"b": 12, "bn": "历代志上", "ab": "代上", "c": 16, "v": 41, "t": "与他们一同被派的有希幔、耶杜顿，和其余被选名字录在册上的，称谢耶和华，因他的慈爱永远长存。"}, {"b": 12, "bn": "历代志上", "ab": "代上", "c": 17, "v": 13, "t": "我要作他的父，他要作我的子；并不使我的慈爱离开他，像离开在你以前的扫罗一样。"}, {"b": 13, "bn": "历代志下", "ab": "代下", "c": 1, "v": 8, "t": "所罗门对神说：“你曾向我父大卫大施慈爱，使我接续他作王。"}, {"b": 13, "bn": "历代志下", "ab": "代下", "c": 5, "v": 13, "t": "吹号的、歌唱的都一齐发声，声合为一，赞美感谢耶和华。吹号、敲钹，用各种乐器，扬声赞美耶和华说：耶和华本为善，他的慈爱永远长存！那时，耶和华的殿有云充满，"}, {"b": 13, "bn": "历代志下", "ab": "代下", "c": 6, "v": 14, "t": "说：“耶和华─以色列的神啊，天上地下没有神可比你的！你向那尽心行在你面前的仆人守约施慈爱；"}, {"b": 13, "bn": "历代志下", "ab": "代下", "c": 6, "v": 42, "t": "耶和华神啊，求你不要厌弃你的受膏者，要记念向你仆人大卫所施的慈爱。”"}, {"b": 13, "bn": "历代志下", "ab": "代下", "c": 7, "v": 3, "t": "那火降下、耶和华的荣光在殿上的时候，以色列众人看见，就在铺石地俯伏叩拜，称谢耶和华说：耶和华本为善，他的慈爱永远长存！"}, {"b": 13, "bn": "历代志下", "ab": "代下", "c": 7, "v": 6, "t": "祭司侍立，各供其职；利未人也拿着耶和华的乐器，就是大卫王造出来、藉利未人颂赞耶和华的。（他的慈爱永远长存！）祭司在众人面前吹号，以色列人都站立。"}, {"b": 13, "bn": "历代志下", "ab": "代下", "c": 20, "v": 21, "t": "约沙法既与民商议了，就设立歌唱的人，颂赞耶和华，使他们穿上圣洁的礼服，走在军前赞美耶和华说：“当称谢耶和华，因他的慈爱永远长存！”"}, {"b": 14, "bn": "以斯拉记", "ab": "拉", "c": 3, "v": 11, "t": "他们彼此唱和，赞美称谢耶和华说：他本为善，他向以色列人永发慈爱。他们赞美耶和华的时候，众民大声呼喊，因耶和华殿的根基已经立定。"}, {"b": 15, "bn": "尼希米记", "ab": "尼", "c": 1, "v": 5, "t": "“耶和华─天上的神，大而可畏的神啊，你向爱你、守你诫命的人守约施慈爱。"}, {"b": 15, "bn": "尼希米记", "ab": "尼", "c": 9, "v": 17, "t": "不肯顺从，也不记念你在他们中间所行的奇事，竟硬著颈项，居心背逆，自立首领，要回他们为奴之地。但你是乐意饶恕人，有恩典，有怜悯，不轻易发怒，有丰盛慈爱的神，并不丢弃他们。"}, {"b": 15, "bn": "尼希米记", "ab": "尼", "c": 9, "v": 32, "t": "“我们的神啊，你是至大、至能、至可畏、守约施慈爱的神。我们的君王、首领、祭司、先知、列祖，和你的众民，从亚述列王的时候直到今日所遭遇的苦难，现在求你不要以为小。"}, {"b": 15, "bn": "尼希米记", "ab": "尼", "c": 13, "v": 22, "t": "我吩咐利未人洁净自己，来守城门，使安息日为圣。我的神啊，求你因这事记念我，照你的大慈爱怜恤我。"}, {"b": 17, "bn": "约伯记", "ab": "伯", "c": 6, "v": 14, "t": "那将要灰心、离弃全能者、不敬畏神的人，他的朋友当以慈爱待他。"}, {"b": 17, "bn": "约伯记", "ab": "伯", "c": 10, "v": 12, "t": "你将生命和慈爱赐给我；你也眷顾保全我的心灵。"}, {"b": 17, "bn": "约伯记", "ab": "伯", "c": 37, "v": 13, "t": "或为责罚，或为润地，或为施行慈爱。"}, {"b": 17, "bn": "约伯记", "ab": "伯", "c": 39, "v": 13, "t": "鸵鸟的翅膀欢然搧展，岂是显慈爱的翎毛和羽毛吗？"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 5, "v": 7, "t": "至于我，我必凭你丰盛的慈爱进入你的居所；我必存敬畏你的心向你的圣殿下拜。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 6, "v": 4, "t": "耶和华啊，求你转回搭救我！因你的慈爱拯救我。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 13, "v": 5, "t": "但我倚靠你的慈爱；我的心因你的救恩快乐。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 17, "v": 7, "t": "求你显出你奇妙的慈爱来；你是那用右手拯救投靠你的脱离起来攻击他们的人。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 18, "v": 25, "t": "慈爱的人，你以慈爱待他；完全的人，你以完全待他。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 18, "v": 50, "t": "耶和华赐极大的救恩给他所立的王，施慈爱给他的受膏者，就是给大卫和他的后裔，直到永远。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 21, "v": 7, "t": "王倚靠耶和华，因至高者的慈爱必不摇动。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 23, "v": 6, "t": "我一生一世必有恩惠慈爱随着我；我且要住在耶和华的殿中，直到永远。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 25, "v": 6, "t": "耶和华啊，求你记念你的怜悯和慈爱，因为这是亘古以来所常有的。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 25, "v": 7, "t": "求你不要记念我幼年的罪愆和我的过犯；耶和华啊，求你因你的恩惠，按你的慈爱记念我。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 25, "v": 10, "t": "凡遵守他的约和他法度的人，耶和华都以慈爱诚实待他。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 26, "v": 3, "t": "因为你的慈爱常在我眼前，我也按你的真理而行。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 31, "v": 7, "t": "我要为你的慈爱高兴欢喜；因为你见过我的困苦，知道我心中的艰难。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 31, "v": 16, "t": "求你使你的脸光照仆人，凭你的慈爱拯救我。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 31, "v": 21, "t": "耶和华是应当称颂的，因为他在坚固城里向我施展奇妙的慈爱。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 32, "v": 10, "t": "恶人必多受苦楚；惟独倚靠耶和华的必有慈爱四面环绕他。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 33, "v": 5, "t": "他喜爱仁义公平；遍地满了耶和华的慈爱。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 33, "v": 18, "t": "耶和华的眼目看顾敬畏他的人和仰望他慈爱的人，"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 33, "v": 22, "t": "耶和华啊，求你照着我们所仰望你的，向我们施行慈爱！"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 36, "v": 5, "t": "耶和华啊，你的慈爱上及诸天；你的信实达到穹苍。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 36, "v": 7, "t": "神啊，你的慈爱何其宝贵！世人投靠在你翅膀的荫下。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 36, "v": 10, "t": "愿你常施慈爱给认识你的人，常以公义待心里正直的人。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 40, "v": 10, "t": "我未曾把你的公义藏在心里；我已陈明你的信实和你的救恩；我在大会中未曾隐瞒你的慈爱和诚实。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 40, "v": 11, "t": "耶和华啊，求你不要向我止住你的慈悲！愿你的慈爱和诚实常常保佑我！"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 42, "v": 8, "t": "白昼，耶和华必向我施慈爱；黑夜，我要歌颂祷告赐我生命的神。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 44, "v": 26, "t": "求你起来帮助我们！凭你的慈爱救赎我们！"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 48, "v": 9, "t": "神啊，我们在你的殿中想念你的慈爱。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 51, "v": 1, "t": "（大卫与拔示巴同室以后，先知拿单来见他；他作这诗，交与伶长。）神啊，求你按你的慈爱怜恤我！按你丰盛的慈悲涂抹我的过犯！"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 52, "v": 1, "t": "（以东人多益来告诉扫罗说：大卫到了亚希米勒家。那时，大卫作这训诲诗，交与伶长。）勇士啊，你为何以作恶自夸？神的慈爱是常存的。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 52, "v": 8, "t": "至于我，就像神殿中的青橄榄树；我永永远远倚靠神的慈爱。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 57, "v": 3, "t": "那要吞我的人辱骂我的时候，神从天上必施恩救我，也必向我发出慈爱和诚实。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 57, "v": 10, "t": "因为，你的慈爱高及诸天；你的诚实达到穹苍。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 59, "v": 10, "t": "我的神要以慈爱迎接我；神要叫我看见我仇敌遭报。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 59, "v": 16, "t": "但我要歌颂你的力量，早晨要高唱你的慈爱；因为你作过我的高台，在我急难的日子作过我的避难所。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 61, "v": 7, "t": "他必永远坐在神面前；愿你预备慈爱和诚实保佑他！"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 62, "v": 12, "t": "主啊，慈爱也是属乎你，因为你照着各人所行的报应他。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 63, "v": 3, "t": "因你的慈爱比生命更好，我的嘴唇要颂赞你。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 66, "v": 20, "t": "神是应当称颂的！他并没有推却我的祷告，也没有叫他的慈爱离开我。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 69, "v": 13, "t": "但我在悦纳的时候向你─耶和华祈祷。神啊，求你按你丰盛的慈爱，凭你拯救的诚实应允我！"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 69, "v": 16, "t": "耶和华啊，求你应允我！因为你的慈爱本为美好；求你按你丰盛的慈悲回转眷顾我！"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 77, "v": 8, "t": "难道他的慈爱永远穷尽，他的应许世世废弃吗？"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 85, "v": 7, "t": "耶和华啊，求你使我们得见你的慈爱，又将你的救恩赐给我们。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 85, "v": 10, "t": "慈爱和诚实彼此相遇；公义和平安彼此相亲。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 86, "v": 5, "t": "主啊，你本为良善，乐意饶恕人，有丰盛的慈爱赐给凡求告你的人。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 86, "v": 13, "t": "因为，你向我发的慈爱是大的；你救了我的灵魂免入极深的阴间。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 86, "v": 15, "t": "主啊，你是有怜悯有恩典的神，不轻易发怒，并有丰盛的慈爱和诚实。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 88, "v": 11, "t": "岂能在坟墓里述说你的慈爱吗？岂能在灭亡中述说你的信实吗？"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 89, "v": 1, "t": "（以斯拉人以探的训诲诗。）我要歌唱耶和华的慈爱，直到永远；我要用口将你的信实传与万代。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 89, "v": 14, "t": "公义和公平是你宝座的根基；慈爱和诚实行在你前面。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 89, "v": 24, "t": "只是我的信实和我的慈爱要与他同在；因我的名，他的角必被高举。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 89, "v": 28, "t": "我要为他存留我的慈爱，直到永远；我与他立的约必要坚定。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 89, "v": 33, "t": "只是我必不将我的慈爱全然收回，也必不叫我的信实废弃。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 89, "v": 49, "t": "主啊，你从前凭你的信实向大卫立誓要施行的慈爱在哪里呢？"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 90, "v": 14, "t": "求你使我们早早饱得你的慈爱，好叫我们一生一世欢呼喜乐。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 92, "v": 2, "t": "用十弦的乐器和瑟，用琴弹幽雅的声音，早晨传扬你的慈爱；每夜传扬你的信实。这本为美事。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 94, "v": 18, "t": "我正说我失了脚，耶和华啊，那时你的慈爱扶助我。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 98, "v": 3, "t": "记念他向以色列家所发的慈爱，所凭的信实。地的四极都看见我们神的救恩。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 100, "v": 5, "t": "因为耶和华本为善。他的慈爱存到永远；他的信实直到万代。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 101, "v": 1, "t": "（大卫的诗）。我要歌唱慈爱和公平；耶和华啊，我要向你歌颂！"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 103, "v": 8, "t": "耶和华有怜悯，有恩典，不轻易发怒，且有丰盛的慈爱。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 103, "v": 11, "t": "天离地何等的高，他的慈爱向敬畏他的人也是何等的大！"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 103, "v": 17, "t": "但耶和华的慈爱归于敬畏他的人，从亘古到永远；他的公义也归于子子孙孙─"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 106, "v": 1, "t": "你们要赞美耶和华！要称谢耶和华，因他本为善；他的慈爱永远长存！"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 106, "v": 7, "t": "我们的祖宗在埃及不明白你的奇事，不记念你丰盛的慈爱，反倒在红海行了悖逆。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 106, "v": 45, "t": "为他们记念他的约，照他丰盛的慈爱后悔。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 107, "v": 1, "t": "你们要称谢耶和华，因他本为善；他的慈爱永远长存！"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 107, "v": 8, "t": "但愿人因耶和华的慈爱和他向人所行的奇事都称赞他；"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 107, "v": 15, "t": "但愿人因耶和华的慈爱和他向人所行的奇事都称赞他；"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 107, "v": 21, "t": "但愿人因耶和华的慈爱和他向人所行的奇事都称赞他。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 107, "v": 31, "t": "但愿人因耶和华的慈爱和他向人所行的奇事都称赞他。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 107, "v": 43, "t": "凡有智慧的，必在这些事上留心，也必思想耶和华的慈爱。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 108, "v": 4, "t": "因为，你的慈爱大过诸天；你的诚实达到穹苍。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 109, "v": 21, "t": "主─耶和华啊，求你为你的名恩待我；因你的慈爱美好，求你搭救我！"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 109, "v": 26, "t": "耶和华─我的神啊，求你帮助我，照你的慈爱拯救我，"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 115, "v": 1, "t": "耶和华啊，荣耀不要归与我们，不要归与我们；要因你的慈爱和诚实归在你的名下！"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 117, "v": 2, "t": "因为他向我们大施慈爱；耶和华的诚实存到永远。你们要赞美耶和华！"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 118, "v": 1, "t": "你们要称谢耶和华，因他本为善；他的慈爱永远长存！"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 118, "v": 2, "t": "愿以色列说：他的慈爱永远长存！"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 118, "v": 3, "t": "愿亚伦的家说：他的慈爱永远长存！"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 118, "v": 4, "t": "愿敬畏耶和华的说：他的慈爱永远长存！"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 118, "v": 29, "t": "你们要称谢耶和华，因他本为善；他的慈爱永远长存！"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 119, "v": 41, "t": "耶和华啊，愿你照你的话，使你的慈爱，就是你的救恩，临到我身上，"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 119, "v": 64, "t": "耶和华啊，你的慈爱遍满大地；求你将你的律例教训我！"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 119, "v": 76, "t": "求你照着应许仆人的话，以慈爱安慰我。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 119, "v": 88, "t": "求你照你的慈爱将我救活，我就遵守你口中的法度。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 119, "v": 124, "t": "求你照你的慈爱待仆人，将你的律例教训我。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 119, "v": 149, "t": "求你照你的慈爱听我的声音；耶和华啊，求你照你的典章将我救活！"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 119, "v": 159, "t": "你看我怎样爱你的训词！耶和华啊，求你照你的慈爱将我救活！"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 130, "v": 7, "t": "以色列啊，你当仰望耶和华！因他有慈爱，有丰盛的救恩。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 136, "v": 1, "t": "你们要称谢耶和华，因他本为善；他的慈爱永远长存。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 136, "v": 2, "t": "你们要称谢万神之神，因他的慈爱永远长存。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 136, "v": 3, "t": "你们要称谢万主之主，因他的慈爱永远长存。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 136, "v": 4, "t": "称谢那独行大奇事的，因他的慈爱永远长存。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 136, "v": 5, "t": "称谢那用智慧造天的，因他的慈爱永远长存。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 136, "v": 6, "t": "称谢那铺地在水以上的，因他的慈爱永远长存。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 136, "v": 7, "t": "称谢那造成大光的，因他的慈爱永远长存。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 136, "v": 8, "t": "他造日头管白昼，因他的慈爱永远长存。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 136, "v": 9, "t": "他造月亮星宿管黑夜，因他的慈爱永远长存。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 136, "v": 10, "t": "称谢那击杀埃及人之长子的，因他的慈爱永远长存。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 136, "v": 11, "t": "他领以色列人从他们中间出来，因他的慈爱永远长存。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 136, "v": 12, "t": "他施展大能的手和伸出来的膀臂，因他的慈爱永远长存。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 136, "v": 13, "t": "称谢那分裂红海的，因他的慈爱永远长存。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 136, "v": 14, "t": "他领以色列从其中经过，因他的慈爱永远长存；"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 136, "v": 15, "t": "却把法老和他的军兵推翻在红海里，因他的慈爱永远长存。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 136, "v": 16, "t": "称谢那引导自己的民行走旷野的，因他的慈爱永远长存。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 136, "v": 17, "t": "称谢那击杀大君王的，因他的慈爱永远长存。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 136, "v": 18, "t": "他杀戮有名的君王，因他的慈爱永远长存；"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 136, "v": 19, "t": "就是杀戮亚摩利王西宏，因他的慈爱永远长存；"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 136, "v": 20, "t": "又杀巴珊王噩，因他的慈爱永远长存。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 136, "v": 21, "t": "他将他们的地赐他的百姓为业，因他的慈爱永远长存；"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 136, "v": 22, "t": "就是赐他的仆人以色列为业，因他的慈爱永远长存。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 136, "v": 23, "t": "他顾念我们在卑微的地步，因他的慈爱永远长存。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 136, "v": 24, "t": "他救拔我们脱离敌人，因他的慈爱永远长存。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 136, "v": 25, "t": "他赐粮食给凡有血气的，因他的慈爱永远长存。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 136, "v": 26, "t": "你们要称谢天上的神，因他的慈爱永远长存。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 138, "v": 2, "t": "我要向你的圣殿下拜，为你的慈爱和诚实称赞你的名；因你使你的话显为大，过于你所应许的（或译：超乎你的名声）。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 138, "v": 8, "t": "耶和华必成全关乎我的事；耶和华啊，你的慈爱永远长存！求你不要离弃你手所造的。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 143, "v": 8, "t": "求你使我清晨得听你慈爱之言，因我倚靠你；求你使我知道当行的路，因我的心仰望你。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 143, "v": 12, "t": "凭你的慈爱剪除我的仇敌，灭绝一切苦待我的人，因我是你的仆人。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 144, "v": 2, "t": "他是我慈爱的主，我的山寨，我的高台，我的救主，我的盾牌，是我所投靠的；他使我的百姓服在我以下。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 145, "v": 8, "t": "耶和华有恩惠，有怜悯，不轻易发怒，大有慈爱。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 145, "v": 17, "t": "耶和华在他一切所行的，无不公义；在他一切所做的都有慈爱。"}, {"b": 18, "bn": "诗篇", "ab": "诗", "c": 147, "v": 11, "t": "耶和华喜爱敬畏他和盼望他慈爱的人。"}, {"b": 19, "bn": "箴言", "ab": "箴", "c": 3, "v": 3, "t": "不可使慈爱、诚实离开你，要系在你颈项上，刻在你心版上。"}, {"b": 19, "bn": "箴言", "ab": "箴", "c": 14, "v": 22, "t": "谋恶的，岂非走入迷途吗？谋善的，必得慈爱和诚实。"}, {"b": 22, "bn": "以赛亚书", "ab": "赛", "c": 16, "v": 5, "t": "必有宝座因慈爱坚立；必有一位诚诚实实坐在其上，在大卫帐幕中施行审判，寻求公平，速行公义。"}, {"b": 22, "bn": "以赛亚书", "ab": "赛", "c": 54, "v": 8, "t": "我的怒气涨溢，顷刻之间向你掩面，却要以永远的慈爱怜恤你。这是耶和华─你的救赎主说的。"}, {"b": 22, "bn": "以赛亚书", "ab": "赛", "c": 54, "v": 10, "t": "大山可以挪开，小山可以迁移；但我的慈爱必不离开你；我平安的约也不迁移。这是怜恤你的耶和华说的。"}, {"b": 22, "bn": "以赛亚书", "ab": "赛", "c": 63, "v": 7, "t": "我要照耶和华一切所赐给我们的，提起他的慈爱和美德，并他向以色列家所施的大恩；这恩是照他的怜恤和丰盛的慈爱赐给他们的。"}, {"b": 22, "bn": "以赛亚书", "ab": "赛", "c": 63, "v": 9, "t": "他们在一切苦难中，他也同受苦难；并且他面前的使者拯救他们；他以慈爱和怜悯救赎他们；在古时的日子常保抱他们，怀搋他们。"}, {"b": 23, "bn": "耶利米书", "ab": "耶", "c": 3, "v": 12, "t": "你去向北方宣告说：耶和华说：背道的以色列啊，回来吧！我必不怒目看你们；因为我是慈爱的，我必不永远存怒。这是耶和华说的。"}, {"b": 23, "bn": "耶利米书", "ab": "耶", "c": 9, "v": 24, "t": "夸口的却因他有聪明，认识我是耶和华，又知道我喜悦在世上施行慈爱、公平，和公义，以此夸口。这是耶和华说的。”"}, {"b": 23, "bn": "耶利米书", "ab": "耶", "c": 16, "v": 5, "t": "耶和华如此说：“不要进入丧家，不要去哀哭，也不要为他们悲伤，因我已将我的平安、慈爱、怜悯从这百姓夺去了。这是耶和华说的。"}, {"b": 23, "bn": "耶利米书", "ab": "耶", "c": 31, "v": 3, "t": "古时（或译：从远方）耶和华向以色列（原文是我）显现，说：我以永远的爱爱你，因此我以慈爱吸引你。"}, {"b": 23, "bn": "耶利米书", "ab": "耶", "c": 32, "v": 18, "t": "你施慈爱与千万人，又将父亲的罪孽报应在他后世子孙的怀中，是至大全能的神，万军之耶和华是你的名。"}, {"b": 23, "bn": "耶利米书", "ab": "耶", "c": 33, "v": 11, "t": "必再听见有欢喜和快乐的声音、新郎和新妇的声音，并听见有人说：要称谢万军之耶和华，因耶和华本为善；他的慈爱永远长存！又有奉感谢祭到耶和华殿中之人的声音；因为我必使这地被掳的人归回，和起初一样。这是耶和华说的。”"}, {"b": 24, "bn": "耶利米哀歌", "ab": "哀", "c": 3, "v": 22, "t": "我们不致消灭，是出于耶和华诸般的慈爱；是因他的怜悯不致断绝。"}, {"b": 24, "bn": "耶利米哀歌", "ab": "哀", "c": 3, "v": 32, "t": "主虽使人忧愁，还要照他诸般的慈爱发怜悯。"}, {"b": 26, "bn": "但以理书", "ab": "但", "c": 9, "v": 4, "t": "我向耶和华─我的神祈祷、认罪，说：“主啊，大而可畏的神，向爱主、守主诫命的人守约施慈爱。"}, {"b": 27, "bn": "何西阿书", "ab": "何", "c": 2, "v": 19, "t": "我必聘你永远归我为妻，以仁义、公平、慈爱、怜悯聘你归我；"}, {"b": 27, "bn": "何西阿书", "ab": "何", "c": 10, "v": 12, "t": "你们要为自己栽种公义，就能收割慈爱。现今正是寻求耶和华的时候；你们要开垦荒地，等他临到，使公义如雨降在你们身上。"}, {"b": 28, "bn": "约珥书", "ab": "珥", "c": 2, "v": 13, "t": "你们要撕裂心肠，不撕裂衣服。归向耶和华─你们的神；因为他有恩典，有怜悯，不轻易发怒，有丰盛的慈爱，并且后悔不降所说的灾。"}, {"b": 31, "bn": "约拿书", "ab": "拿", "c": 4, "v": 2, "t": "就祷告耶和华说：“耶和华啊，我在本国的时候岂不是这样说吗？我知道你是有恩典、有怜悯的神，不轻易发怒，有丰盛的慈爱，并且后悔不降所说的灾，所以我急速逃往他施去。"}, {"b": 32, "bn": "弥迦书", "ab": "弥", "c": 7, "v": 20, "t": "你必按古时起誓应许我们列祖的话，向雅各发诚实，向亚伯拉罕施慈爱。"}, {"b": 37, "bn": "撒迦利亚书", "ab": "亚", "c": 7, "v": 9, "t": "“万军之耶和华曾对你们的列祖如此说：‘要按至理判断，各人以慈爱怜悯弟兄。"}, {"b": 45, "bn": "哥林多前书", "ab": "林前", "c": 4, "v": 21, "t": "你们愿意怎么样呢？是愿意我带着刑杖到你们那里去呢？还是要我存慈爱温柔的心呢？"}, {"b": 46, "bn": "哥林多后书", "ab": "林后", "c": 13, "v": 14, "t": "愿主耶稣基督的恩惠、神的慈爱、圣灵的感动常与你们众人同在！"}, {"b": 48, "bn": "以弗所书", "ab": "弗", "c": 5, "v": 1, "t": "所以，你们该效法神，好像蒙慈爱的儿女一样。"}, {"b": 55, "bn": "提多书", "ab": "多", "c": 3, "v": 4, "t": "但到了神─我们救主的恩慈和他向人所施的慈爱显明的时候，"}, {"b": 61, "bn": "约翰一书", "ab": "约壹", "c": 3, "v": 1, "t": "你看父赐给我们是何等的慈爱，使我们得称为神的儿女；我们也真是他的儿女。世人所以不认识我们，是因未曾认识他。"}, {"b": 64, "bn": "犹大书", "ab": "犹", "c": 1, "v": 2, "t": "愿怜恤、平安、慈爱多多地加给你们。"}], SENSE = {"1": [[18, 136, 1], [18, 103, 17], [1, 34, 6]], "2": [[0, 19, 19], [18, 31, 16], [24, 3, 22]], "3": [[8, 20, 14], [9, 2, 6], [0, 32, 10]]};
+const list = document.getElementById('list'), body = document.getElementById('body');
+function hl(t){
+  let s = t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  s = s.split('慈爱').join('<em class="kw">慈爱</em>');
+  ['诚实','怜悯'].forEach(function(w){ s = s.split(w).join(''+w+''); });
+  return s;
+}
+function render(pred){
+  const g = {};
+  V.filter(pred).forEach(function(x){ (g[x.bn] = g[x.bn] || []).push(x); });
+  const order = Object.keys(g).sort(function(a,b){ return g[b].length - g[a].length; });
+  list.innerHTML = order.map(function(bn){
+    const arr = g[bn];
+    return '<section class="grp"><h4>'+bn+'<i>'+arr.length+' 处</i></h4>' +
+      arr.map(function(x){ return '<div class="v" data-b="'+x.b+'" data-c="'+x.c+'" data-v="'+x.v+'">'+
+        '<span class="vr">'+x.ab+' '+x.c+':'+x.v+'</span>'+
+        '<span class="vt">'+hl(x.t)+'</span><span class="go">›</span></div>'; }).join('') + '</section>';
+  }).join('');
+}
+document.querySelectorAll('.fchip').forEach(function(ch){
+  ch.onclick = function(){
+    document.querySelectorAll('.fchip').forEach(function(x){ x.classList.remove('on'); });
+    ch.classList.add('on');
+    const k = ch.dataset.k;
+    if(k === 'all'){ render(function(){return true;});
+
+/* 筛选条：鼠标拖拽 / 滚轮横向（触屏走原生） */
+(function(){
+  const strip = document.querySelector('.filters');
+  let st = null, moved = false;
+  strip.addEventListener('pointerdown', function(e){
+    if(e.pointerType === 'touch') return;
+    st = {x:e.clientX, left:strip.scrollLeft, id:e.pointerId}; moved = false;
+  });
+  strip.addEventListener('pointermove', function(e){
+    if(!st) return;
+    const dx = e.clientX - st.x;
+    if(!moved && Math.abs(dx) > 4){ moved = true; strip.classList.add('grabbing');
+      try{ strip.setPointerCapture(st.id); }catch(_){} }
+    if(moved) strip.scrollLeft = st.left - dx;
+  });
+  function end(){ if(!st) return; st = null; strip.classList.remove('grabbing');
+    if(moved) setTimeout(function(){ moved = false; }, 0); }
+  ['pointerup','pointercancel','pointerleave'].forEach(function(ev){ strip.addEventListener(ev, end); });
+  strip.addEventListener('click', function(e){ if(moved){ e.preventDefault(); e.stopPropagation(); moved = false; } }, true);
+  strip.addEventListener('wheel', function(e){
+    if(Math.abs(e.deltaY) > Math.abs(e.deltaX)){ strip.scrollLeft += e.deltaY; e.preventDefault(); }
+  }, {passive:false});
+})(); }
+    else if(k === 'ot'){ render(function(x){ return x.b < 39; }); }
+    else if(k === 'nt'){ render(function(x){ return x.b >= 39; }); }
+    else {
+      const set = SENSE[k.slice(1)].map(function(a){ return a.join('-'); });
+      render(function(x){ return set.indexOf(x.b+'-'+x.c+'-'+x.v) >= 0; });
+    }
+    body.scrollTo({top:0, behavior:'smooth'});
+  };
+});
+render(function(){return true;});
+
+/* 筛选条：鼠标拖拽 / 滚轮横向（触屏走原生） */
+(function(){
+  const strip = document.querySelector('.filters');
+  let st = null, moved = false;
+  strip.addEventListener('pointerdown', function(e){
+    if(e.pointerType === 'touch') return;
+    st = {x:e.clientX, left:strip.scrollLeft, id:e.pointerId}; moved = false;
+  });
+  strip.addEventListener('pointermove', function(e){
+    if(!st) return;
+    const dx = e.clientX - st.x;
+    if(!moved && Math.abs(dx) > 4){ moved = true; strip.classList.add('grabbing');
+      try{ strip.setPointerCapture(st.id); }catch(_){} }
+    if(moved) strip.scrollLeft = st.left - dx;
+  });
+  function end(){ if(!st) return; st = null; strip.classList.remove('grabbing');
+    if(moved) setTimeout(function(){ moved = false; }, 0); }
+  ['pointerup','pointercancel','pointerleave'].forEach(function(ev){ strip.addEventListener(ev, end); });
+  strip.addEventListener('click', function(e){ if(moved){ e.preventDefault(); e.stopPropagation(); moved = false; } }, true);
+  strip.addEventListener('wheel', function(e){
+    if(Math.abs(e.deltaY) > Math.abs(e.deltaX)){ strip.scrollLeft += e.deltaY; e.preventDefault(); }
+  }, {passive:false});
+})();
+
+/* 左上返回：回经库的词卡视图，并重新打开这张词卡 */
+document.querySelector('.back').onclick = function(){
+  if(document.referrer && document.referrer.indexOf('阅读页') >= 0 && history.length > 1){ history.back(); return; }
+  location.href = '经库.html?card=word&wno=1168';
+};
+
+/* 点经节 → 阅读页（带上词，便于返回与高亮） */
+document.getElementById('list').addEventListener('click', function(e){
+  const row = e.target.closest('.v'); if(!row) return;
+  // 经页里 b 是 0 基（创世记=0），阅读页是 1 基（创世记=1）
+  location.href = '阅读页.html?b=' + (+row.dataset.b + 1) + '&c=' + row.dataset.c + '&v=' + row.dataset.v +
+    '&kw=' + encodeURIComponent('慈爱') + '&from=' + encodeURIComponent('慈爱');
+});
+</script></body></html>

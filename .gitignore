@@ -1,0 +1,7 @@
+node_modules/
+ios/
+out/
+www/data/home/
+www/_backup/
+*.ipa
+.DS_Store

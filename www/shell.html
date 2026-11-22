@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#F7F2E8">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="寻见">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="apple-touch-icon" href="favicon.svg">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
+<title>寻求.就寻见</title>
+<style>
+:root{--paper:#F7F2E8;--paper2:#FCF9F2;--ink:#26231E;--ink2:#5D574C;--ink3:#93897A;
+--line:#E4DBC9;--brass:#8A6A3B;--brass2:#B5924F;--serif:"Noto Serif SC",STSong,"Songti SC",serif;
+--sans:"PingFang SC","Microsoft YaHei",sans-serif}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{background:#EDE7DA;font-family:var(--sans);overflow:hidden}
+.phone{position:relative;max-width:430px;margin:0 auto;height:100vh;height:100dvh;display:flex;flex-direction:column;
+background:var(--paper);overflow:hidden}
+@media (min-width:520px) and (pointer:fine){
+  body{display:flex;justify-content:center;align-items:center;background:#191713}
+  .phone{max-width:430px;height:min(100dvh,932px);border-radius:18px;box-shadow:0 24px 60px rgba(0,0,0,.45)}
+}
+.view{flex:1 1 auto;position:relative;background:var(--paper)}
+.view iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:var(--paper);display:block}
+
+/* 迷你条 */
+.mini{display:none;flex:0 0 auto;position:relative;margin:0 12px 6px;
+align-items:center;gap:10px;padding:9px 12px;border-radius:12px;background:rgba(252,249,242,.98);
+border:1px solid var(--line);box-shadow:0 4px 18px rgba(38,35,30,.14);z-index:20;cursor:pointer}
+.mini.on{display:flex}
+.mini .c{width:30px;height:30px;border-radius:7px;flex:none;background:linear-gradient(145deg,#B5924F,#8A6A3B);
+display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--serif);font-size:13px}
+.mini .n{flex:1;min-width:0;font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mini .n i{font-style:normal;color:var(--ink3);font-size:9.5px;margin-left:6px}
+.mini .b{width:28px;height:28px;flex:none;display:flex;align-items:center;justify-content:center;border:none;background:none}
+.mini .b svg{width:15px;height:15px;fill:var(--brass)}
+.mini .p{position:absolute;left:10px;right:10px;bottom:2px;height:1.5px;background:var(--line);border-radius:2px;overflow:hidden}
+.mini .p i{display:block;height:100%;width:0;background:var(--brass)}
+
+/* 底栏 */
+.tabbar{flex:0 0 auto;display:flex;border-top:1px solid var(--line);background:rgba(252,249,242,.96);
+padding:9px 6px calc(9px + env(safe-area-inset-bottom));z-index:30}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--ink3);position:relative;
+padding-top:5px;cursor:pointer}
+.tab svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.tab span{font-size:10.5px;letter-spacing:1.4px}
+.tab.on{color:var(--brass)} .tab.on span{font-weight:600}
+.tab.on:before{content:"";position:absolute;top:-6px;width:20px;height:2px;border-radius:2px;background:var(--brass)}
+
+/* ── 冷启动开屏 ── */
+.splash{position:absolute;inset:0;z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;
+background:radial-gradient(120% 90% at 50% 42%,#2A2620 0%,#1D1A16 46%,#12100E 100%);
+transition:opacity .45s ease;overflow:hidden}
+.splash:before{content:"";position:absolute;inset:0;background:radial-gradient(60% 40% at 50% 44%,rgba(181,146,79,.10),transparent 70%)}
+.splash.gone{opacity:0;pointer-events:none}
+.splash .cross{width:84px;height:112px;position:relative;z-index:2}
+.splash .cross path{fill:none;stroke:#B5924F;stroke-width:1.15;stroke-linecap:round;
+stroke-dasharray:120;stroke-dashoffset:120;animation:xjdraw 900ms cubic-bezier(.4,.1,.2,1) 120ms forwards}
+@keyframes xjdraw{to{stroke-dashoffset:0}}
+.splash .word{margin-top:34px;font-family:var(--serif);font-size:15px;letter-spacing:7px;text-indent:7px;
+color:#E9DFC9;opacity:0;animation:xjfade 700ms ease-out 820ms forwards;z-index:2}
+.splash .rule{width:34px;height:1px;margin-top:16px;opacity:0;animation:xjfade 700ms ease-out 980ms forwards;z-index:2;
+background:linear-gradient(90deg,transparent,rgba(181,146,79,.75),transparent)}
+@keyframes xjfade{to{opacity:1}}
+body.fs .tabbar{display:none!important}
+body.fs .mini{display:none!important}
+</style>
+<style id="tablet-css">
+/* ── 平板适配（宽度 ≥700px 生效） ── */
+@media (min-width: 560px){
+  .phone{max-width:none!important;width:100%!important;height:100dvh!important;
+         border-radius:0!important;box-shadow:none!important}
+  .status{display:none!important}
+  .tabbar{padding:14px 12px calc(14px + env(safe-area-inset-bottom))}
+  .tab svg{width:24px;height:24px}
+  .tab span{font-size:12px;letter-spacing:2px}
+}
+@media (min-width: 560px) and (max-width: 999px){
+  .phone{border-radius:0!important}
+}
+
+@media (min-width: 560px){
+  /* 平板：用 100vh 兜底 + 严格 flex 列，避免老 WebView 不认 dvh 时整条底栏被顶出屏幕 */
+  html,body{height:100%!important;overflow:hidden}
+  .phone{height:100vh!important;height:100dvh!important;display:flex!important;
+         flex-direction:column!important;overflow:hidden}
+  .view{flex:1 1 auto!important;min-height:0!important;margin-bottom:79px}
+  .tabbar{position:fixed!important;left:0!important;right:0!important;bottom:0!important;
+          z-index:90!important;flex:0 0 auto!important;width:100%!important;
+          padding:12px 12px max(12px, env(safe-area-inset-bottom))!important;
+          background:rgba(252,249,242,.98)!important;border-top:1px solid var(--line)}
+}
+
+/* JS 兜底：媒体查询在部分 WebView 不生效时，用 class 兜住平板宽度 */
+html.tab-wide .phone{max-width:none!important;width:100%!important;height:100vh!important;height:100dvh!important}
+html.tab-wide .status{display:none!important}
+html.tab-wide .view{margin-bottom:79px}
+html.tab-wide .tabbar{position:fixed!important;left:0!important;right:0!important;bottom:0!important;
+  z-index:90!important;width:100%!important;background:rgba(252,249,242,.98)!important;
+  border-top:1px solid var(--line)}
+</style>
+<style id="hard-css">
+/* 全局防压缩：文字永不逐字换行（部分 WebView 会把容器算窄） */
+html,body{-webkit-text-size-adjust:100%!important;text-size-adjust:100%!important}
+.tab span,.chip,.tagline .tw,.swipe span{white-space:nowrap!important}
+</style>
+<style id="prefs-css">
+/* 夜间 */
+html[data-theme="night"]{--paper:#141210;--paper2:#1C1915;--ink:#EDE6D8;--ink2:#B8AE9D;--ink3:#8B8172;
+  --line:#2E2A23;--brass:#C9A063;--brass2:#E2C089;--brass-soft:rgba(201,160,99,.14)}
+html[data-theme="night"] body{background:#0B0908!important}
+/* 正文字号倍数 */
+html[data-fs="s"]{--fsx:.92} html[data-fs="m"]{--fsx:1}
+html[data-fs="l"]{--fsx:1.1} html[data-fs="xl"]{--fsx:1.2}
+html[data-fs="s"] .zv,html[data-fs="l"] .zv,html[data-fs="xl"] .zv{letter-spacing:.4px}
+html[data-fs="s"] .zvref,html[data-fs="l"] .zvref,html[data-fs="xl"] .zvref{font-size:calc(12.5px*var(--fsx))!important}
+html[data-fs="s"] .zvsub,html[data-fs="l"] .zvsub,html[data-fs="xl"] .zvsub{font-size:calc(9px*var(--fsx))!important}
+html[data-fs="s"] .zfirst,html[data-fs="l"] .zfirst,html[data-fs="xl"] .zfirst{font-size:calc(10px*var(--fsx))!important}
+html[data-fs="s"] .vs .q,html[data-fs="l"] .vs .q,html[data-fs="xl"] .vs .q{font-size:calc(14px*var(--fsx))!important}
+html[data-fs="s"] .bvs .q,html[data-fs="l"] .bvs .q,html[data-fs="xl"] .bvs .q{font-size:calc(13.6px*var(--fsx))!important}
+html[data-fs="s"] .chkv .t,html[data-fs="l"] .chkv .t,html[data-fs="xl"] .chkv .t{font-size:calc(10.8px*var(--fsx))!important}
+html[data-fs="s"] .def,html[data-fs="l"] .def,html[data-fs="xl"] .def{font-size:calc(11.5px*var(--fsx))!important}
+html[data-fs="s"] .ref,html[data-fs="l"] .ref,html[data-fs="xl"] .ref{font-size:calc(11.5px*var(--fsx))!important}
+</style>
+</head>
+<script id="xj-prefs-early">
+(function(){try{var p=JSON.parse(localStorage.getItem('xj_prefs')||'{}');
+if(p.theme)document.documentElement.dataset.theme=p.theme;
+if(p.fs)document.documentElement.dataset.fs=p.fs;}catch(e){}})();
+</script>
+<body>
+<div class="phone">
+  <div class="splash" id="splash">
+    <svg class="cross" viewBox="0 0 24 32" aria-label="十字架">
+      <path d="M12 3v26"/><path d="M4.6 11.5h14.8"/>
+    </svg>
+    <div class="word">寻求.就寻见</div>
+    <div class="rule"></div>
+  </div>
+
+  <div class="view"><iframe id="view" name="xj-embed" src="index.html?embed=1" title="寻见"></iframe></div>
+
+  <div class="mini" id="mini">
+    <div class="c" id="mC">歌</div>
+    <div class="n" id="mN">—</div>
+    <button class="b" id="mB"><svg viewBox="0 0 24 24" id="mI"><path d="M7 5v14l11-7z"/></svg></button>
+    <div class="p"><i id="mP"></i></div>
+  </div>
+
+  <div class="tabbar" id="tabbar">
+    <div class="tab on" data-i="0"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="m15.1 8.9-1.8 4.4-4.4 1.8 1.8-4.4z"/></svg><span>寻见</span></div>
+    <div class="tab" data-i="1"><svg viewBox="0 0 24 24"><path d="M11.2 6.2C9.6 5 7.4 4.4 4.5 4.4v13.2c2.9 0 5.1.6 6.7 1.8 1.6-1.2 3.8-1.8 6.7-1.8V4.4c-2.9 0-5.1.6-6.7 1.8z"/><path d="M11.2 6.2v13.2"/></svg><span>迦南</span></div>
+    <div class="tab" data-i="2"><svg viewBox="0 0 24 24"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></svg><span>敬拜</span></div>
+    <div class="tab" data-i="3"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c1.2-3.8 3.6-5.4 7-5.4S17.8 16.2 19 20"/></svg><span>圣殿</span></div>
+  </div>
+</div>
+
+<audio id="au" preload="metadata"></audio>
+<script>
+/* 寻见 · 单页壳
+ * 音频放在壳里，四个页面用 iframe 载入（?embed=1 隐藏各自底栏），
+ * 所以从乐库切到经库，音乐不会断。
+ */
+var PAGES = ["index.html","经库.html","乐库.html","我的.html"];
+var au = document.getElementById("au");
+var view = document.getElementById("view");
+var mini = document.getElementById("mini");
+var cur = 0, song = null, lastSave = 0;
+
+var BUILD = Date.now();          // 每个窗口一个构建戳，页面永不拿旧缓存
+function tab(i){
+  if (i === cur) return;
+  cur = i;
+  document.querySelectorAll(".tab").forEach(function(t, k){ t.classList.toggle("on", k === i); });
+  view.src = PAGES[i] + "?embed=1&v=" + BUILD;
+  setTimeout(function(){
+    paintMini();
+    toView({ __xj:"state", cur: au.currentTime, dur: au.duration || (song && song.dur) || 0, paused: au.paused });
+  }, 450);
+  setTimeout(function(){ toView({ __xj:"state", cur: au.currentTime, dur: au.duration || (song && song.dur) || 0, paused: au.paused }); }, 1200);
+}
+
+/* 页面内部跳转后同步底栏高亮（同源，可直接读 iframe 的地址） */
+view.addEventListener("load", function(){
+  try {
+    var p = decodeURIComponent(view.contentWindow.location.pathname.split("/").pop() || "");
+    var i = PAGES.indexOf(p);
+    if (i >= 0 && i !== cur) {
+      cur = i;
+      document.querySelectorAll(".tab").forEach(function(t, k){ t.classList.toggle("on", k === i); });
+      paintMini();
+      setTimeout(function(){
+        toView({ __xj:"state", cur: au.currentTime, dur: au.duration || (song && song.dur) || 0, paused: au.paused });
+      }, 350);
+    }
+  } catch(e){}
+});
+
+/* BOOTSRC：首次加载也带版本戳 */
+(function(){ var v = document.getElementById("view");
+  if (v) v.src = PAGES[cur] + "?embed=1&v=" + BUILD; })();
+
+/* 底栏兜底：页面被「滑屏返回 / 浏览器后退」换掉时收不到 on:false，
+   这里在 iframe 每次加载完成后强制把全屏隐藏状态清掉 */
+document.getElementById("view").addEventListener("load", function(){
+  document.body.classList.remove("fs");
+});
+window.addEventListener("popstate", function(){ document.body.classList.remove("fs"); });
+window.addEventListener("pageshow", function(){ document.body.classList.remove("fs"); });
+
+document.getElementById("tabbar").addEventListener("click", function(e){
+  var t = e.target.closest(".tab"); if (t) tab(+t.dataset.i);
+});
+
+/* ---- 迷你条 ---- */
+function fmt(s){ s = Math.max(0, s|0); return (s/60|0) + ":" + ("0"+(s%60)).slice(-2); }
+function paintMini(){
+  if (!song) { mini.classList.remove("on"); return; }
+  // 乐库自己就是播放页；首页用顶部音乐标志做指示器 —— 这两页都不显示底部迷你条
+  var hide = true;          // 四页都有顶部音乐标志（乐库本身就是播放页），底部迷你条不再使用
+  mini.classList.toggle("on", !hide);
+  document.getElementById("mC").textContent = (song.name || "歌").charAt(0);
+  document.getElementById("mN").innerHTML = (song.name || "—") + (song.book ? '<i>' + song.book + '</i>' : '');
+  document.getElementById("mI").innerHTML = au.paused
+    ? '<path d="M7 5v14l11-7z"/>' : '<path d="M8 5h3v14H8zM13 5h3v14h-3z"/>';
+  var d = (au.duration && isFinite(au.duration)) ? au.duration : (song.dur || 0);
+  document.getElementById("mP").style.width = d > 0 ? Math.min(100, au.currentTime / d * 100) + "%" : "0";
+}
+mini.addEventListener("click", function(e){
+  if (e.target.closest("#mB")) {
+    if (au.paused) au.play().catch(function(){}); else au.pause();
+    paintMini(); return;
+  }
+  tab(2);
+});
+document.getElementById("mB").addEventListener("click", function(e){ e.stopPropagation();
+  if (au.paused) au.play().catch(function(){}); else au.pause(); paintMini(); });
+
+/* ---- 与 iframe 通信 ---- */
+function toView(msg){ try { view.contentWindow.postMessage(msg, "*"); } catch(e){} }
+window.addEventListener("message", function(e){
+  var d = e.data; if (!d) return;
+  if (d.__xj === "fullscreen") { document.body.classList.toggle("fs", !!d.on); return; }
+  if (d.__xj === "music-goto") { tab(2); return; }
+  if (d.__xj === "home") { tab(0); return; }
+  if (d.__xj === "music-ask") {
+    toView({ __xj:"state", song: song ? { i: song.i, name: song.name, book: song.book, dur: song.dur } : null,
+             cur: au.currentTime, dur: au.duration || (song && song.dur) || 0, paused: au.paused });
+    return;
+  }
+  if (d.__xj !== "music") return;
+  if (d.cmd === "load") {
+    song = { name: d.name, book: d.book, dur: d.dur, i: d.i, src: d.src };
+    if (d.src && au.getAttribute("src") !== d.src) au.src = d.src;
+    paintMini();
+  } else if (d.cmd === "play") {
+    if (d.src && au.getAttribute("src") !== d.src) au.src = d.src;
+    au.play().then(paintMini).catch(function(err){ console.warn("壳播放失败", err); });
+  } else if (d.cmd === "pause") {
+    au.pause(); paintMini();
+  } else if (d.cmd === "seek") {
+    try { au.currentTime = d.t; } catch(err){}
+    paintMini();
+  } else if (d.cmd === "meta") {
+    song = song || {};
+    song.name = d.name; song.book = d.book; song.dur = d.dur; song.i = d.i;
+    paintMini();
+  }
+});
+
+
+/* ── 音频分析：把低音能量推给页面做脉冲 ── */
+var actx = null, analyser = null, freqData = null, lastLevel = 0, levelRAF = 0;
+function ensureAnalyser(){
+  if (actx) { if (actx.state === "suspended") actx.resume(); return; }
+  try {
+    var AC = window.AudioContext || window.webkitAudioContext;
+    actx = new AC();
+    var src = actx.createMediaElementSource(au);
+    analyser = actx.createAnalyser();
+    analyser.fftSize = 512;
+    analyser.smoothingTimeConstant = 0.72;
+    src.connect(analyser);
+    analyser.connect(actx.destination);   // 必须回接，否则没声音
+    freqData = new Uint8Array(analyser.frequencyBinCount);
+  } catch(e){ actx = null; console.warn("音频分析不可用", e); }
+}
+function pumpLevel(){
+  if (levelRAF) return;
+  var last = 0;
+  function step(t){
+    levelRAF = requestAnimationFrame(step);
+    if (t - last < 40) return;          // 约 25 帧/秒，够用且省
+    last = t;
+    if (!analyser || au.paused) { if (lastLevel !== 0) { lastLevel = 0; toView({ __xj:"level", v:0, bands:[] }); } return; }
+    analyser.getByteFrequencyData(freqData);
+    var sum = 0, n = 24;                // 前 24 个频段＝低频
+    for (var i = 0; i < n; i++) sum += freqData[i];
+    var v = Math.min(1, (sum / n) / 165);
+    v = v * 0.75 + lastLevel * 0.25;    // 平滑
+    /* 12 段频谱：对数取样，覆盖低中高 */
+    var bands = [], NB = 12, top = 96;
+    for (var k = 0; k < NB; k++) {
+      var a = Math.floor(Math.pow(k / NB, 1.55) * top);
+      var z = Math.max(a + 1, Math.floor(Math.pow((k + 1) / NB, 1.55) * top));
+      var ss = 0, cnt = 0;
+      for (var j = a; j < z; j++) { ss += freqData[j]; cnt++; }
+      bands.push(Math.min(1, (ss / Math.max(1, cnt)) / 190));
+    }
+    lastLevel = v;
+    toView({ __xj:"level", v:v, bands:bands });   // 播放时恒定推送，别让页面断粮
+  }
+  levelRAF = requestAnimationFrame(step);
+}
+au.addEventListener("play", function(){ ensureAnalyser(); pumpLevel(); });
+au.addEventListener("pause", function(){ if (toView) toView({ __xj:"level", v:0, bands:[] }); });
+
+au.addEventListener("timeupdate", function(){
+  paintMini();
+  toView({ __xj: "state", cur: au.currentTime, dur: au.duration || (song && song.dur) || 0, paused: au.paused });
+  if (Date.now() - lastSave > 2000) {
+    lastSave = Date.now();
+    try {
+      localStorage.setItem("xj_music_last", JSON.stringify({
+        i: (song && typeof song.i === "number") ? song.i : 0,
+        t: au.currentTime | 0, name: song ? song.name : "", book: song ? song.book : "",
+        dur: Math.round(au.duration || (song && song.dur) || 0)
+      }));
+    } catch(e){}
+  }
+});
+au.addEventListener("loadedmetadata", function(){ paintMini();
+  toView({ __xj: "state", meta: true, cur: au.currentTime, dur: au.duration, paused: au.paused }); });
+au.addEventListener("pause", function(){ paintMini();
+  toView({ __xj: "state", cur: au.currentTime, dur: au.duration, paused: true }); });
+au.addEventListener("play", function(){ paintMini();
+  toView({ __xj: "state", cur: au.currentTime, dur: au.duration, paused: false }); });
+au.addEventListener("ended", function(){ toView({ __xj: "state", ended: true }); paintMini(); });
+
+/* ---- 允许页面内链接/深链指定初始页 ---- */
+(function(){
+  var q = new URLSearchParams(location.search);
+  var p = q.get("page");
+  var idx = PAGES.indexOf(p);
+  if (idx > 0) { cur = idx;
+    document.querySelectorAll(".tab").forEach(function(t,k){ t.classList.toggle("on", k===idx); });
+    view.src = PAGES[idx] + "?embed=1&v=" + BUILD + (q.get("q") ? "&q=" + encodeURIComponent(q.get("q")) : "");
+  }
+})();
+
+/* 开屏：1.5s 后淡出（只在本窗口第一次加载时出现） */
+(function(){
+  var sp = document.getElementById("splash");
+  if (!sp) return;
+  if (/[?&]nosplash=1/.test(location.search)) { sp.remove(); return; }
+  setTimeout(function(){ sp.classList.add("gone"); setTimeout(function(){ if (sp.parentNode) sp.remove(); }, 500); }, 1500);
+})();
+
+/* 自动更新：构建戳变了就整窗刷新（用 localStorage 记住已加载的版本，避免反复刷新） */
+(function(){
+  function check(){
+    fetch("version.json?t=" + Date.now(), { cache: "no-store" })
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        if (!d || !d.build) return;
+        var cur = localStorage.getItem("xj_build");
+        if (!cur) { localStorage.setItem("xj_build", d.build); return; }
+        if (d.build !== cur && !window.__reloading) {
+          window.__reloading = true;
+          localStorage.setItem("xj_build", d.build);
+          location.replace("shell.html?v=" + d.build);
+        }
+      }).catch(function(){});
+  }
+  check();
+  setInterval(check, 20000);
+})();
+/* 注册 Service Worker：第二次打开走缓存，断网也能用（音频除外） */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('sw.js').catch(function(e){ console.warn('SW 注册失败', e); });
+  });
+}
+</script>
+<script id="tab-class">(function(){function set(){var w=window.innerWidth,h=window.innerHeight;var r=document.documentElement;r.classList.toggle("tab-wide",w>=560);r.classList.toggle("tab-tall",w>=560&&h>=900);}set();window.addEventListener("resize",set);window.addEventListener("orientationchange",function(){setTimeout(set,120);});})();</script>
+</body>
+</html>

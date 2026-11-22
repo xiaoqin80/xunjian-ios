@@ -1,0 +1,1834 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Cache-Control" content="no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
+<title>寻见 · 迦南 v0.2（含字卡）</title>
+<style>
+:root{
+  --paper:#F7F2E8; --paper2:#FCF9F2; --ink:#26231E; --ink2:#5D574C; --ink3:#93897A;
+  --line:#E4DBC9; --brass:#8A6A3B; --brass2:#B5924F;
+  --serif:"Noto Serif SC","Source Han Serif SC","Songti SC",STSong,SimSun,serif;
+  --sans:"PingFang SC","Microsoft YaHei",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+body{background:#191713;display:flex;justify-content:center;padding:40px;font-family:var(--sans)}
+.phone{width:390px;height:844px;background:var(--paper);border-radius:38px;position:relative;overflow:hidden;
+  box-shadow:0 24px 60px rgba(0,0,0,.45),0 0 0 9px #2A2723,0 0 0 10px #3A362F;display:flex;flex-direction:column}
+.status{height:30px;flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:11px;color:var(--ink3)}
+.status .b{width:14px;height:7px;border:1px solid var(--ink3);border-radius:2px;opacity:.7}
+.top{flex:0 0 auto;padding:6px 20px 8px;display:flex;align-items:center;justify-content:space-between;position:relative}
+.top h1{font-family:var(--serif);font-size:23px;letter-spacing:6px;font-weight:600}
+.top .n{position:absolute;left:0;right:0;text-align:center;font-size:10.5px;color:var(--ink3);
+  letter-spacing:1px;pointer-events:none}
+.top .acts{display:flex;align-items:center;gap:8px;margin-left:auto}
+.music{position:relative;flex:0 0 auto;width:30px;height:30px;border-radius:50%;border:1px solid var(--line);
+  background:var(--paper2);display:flex;align-items:center;justify-content:center;cursor:pointer;
+  transition:background .25s,border-color .25s}
+.music svg{width:14px;height:14px;fill:none;stroke:var(--brass);stroke-width:1.8}
+.music.playing{border-color:transparent;background:linear-gradient(145deg,#B5924F,#8A6A3B)}
+.music.playing > svg{display:none}
+.music .eq{display:none;align-items:flex-end;gap:2px;height:12px}
+.music.playing .eq{display:flex}
+.music .eq i{width:2px;border-radius:1px;background:#FCF9F2;height:4px;animation:eq 1s ease-in-out infinite}
+.music .eq i:nth-child(2){animation-delay:.18s;height:9px}
+.music .eq i:nth-child(3){animation-delay:.36s;height:6px}
+@keyframes eq{0%,100%{transform:scaleY(.45)}50%{transform:scaleY(1)}}
+.music .ring{position:absolute;inset:-3px;border-radius:50%;pointer-events:none;opacity:0;
+  background:conic-gradient(var(--brass2) var(--p,0%),transparent 0);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 2px),#000 calc(100% - 1px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 2px),#000 calc(100% - 1px));transition:opacity .2s}
+.music.playing .ring{opacity:1}
+
+/* 五排分类 */
+.srch{flex:0 0 auto;margin:0 20px 8px;display:flex;align-items:center;gap:8px;height:36px;padding:0 12px;
+  background:var(--paper2);border:1px solid var(--line);border-radius:11px}
+.srch svg{width:15px;height:15px;stroke:var(--ink3);fill:none;stroke-width:1.8;flex:0 0 auto}
+.srch input{flex:1 1 auto;min-width:0;border:0;background:transparent;outline:none;font-size:12px;
+  color:var(--ink);font-family:var(--sans);letter-spacing:.4px}
+.srch input::placeholder{color:var(--ink3)}
+.srch .clr{font-size:11px;color:var(--ink3);padding:4px 2px;cursor:pointer;display:none}
+.srch.has .clr{display:block}
+.filters{flex:0 0 auto;padding:2px 0 6px;border-bottom:1px solid var(--line);transition:opacity .2s}
+.frow{display:flex;align-items:center;gap:9px;padding:4px 0 4px 20px;transition:opacity .2s}
+.frow.off{opacity:.34;pointer-events:none}
+.fname{flex:0 0 20px;font-family:var(--serif);font-size:11px;color:var(--brass);letter-spacing:1px;opacity:.9}
+.strip{display:flex;gap:7px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;cursor:grab;
+  padding:2px 18px 2px 0;mask-image:linear-gradient(90deg,#000 95%,transparent 100%);-webkit-mask-image:linear-gradient(90deg,#000 95%,transparent)}
+.strip::-webkit-scrollbar{display:none}
+.strip.grabbing{cursor:grabbing;scroll-behavior:auto}
+.strip.fade-l{mask-image:linear-gradient(90deg,transparent 0,#000 54px,#000 95%,transparent 100%);
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 54px,#000 95%,transparent 100%)}
+.chip{flex:0 0 auto;padding:6px 11px;border-radius:999px;border:1px solid var(--line);background:var(--paper2);
+  font-size:11.5px;color:var(--ink2);letter-spacing:.4px;white-space:nowrap;cursor:pointer;transition:all .16s}
+.chip:active{transform:scale(.97)}
+.chip.on{background:var(--brass);border-color:var(--brass);color:#fff;box-shadow:0 3px 9px rgba(138,106,59,.22)}
+.chip .c{font-size:9px;opacity:.7;margin-left:4px}
+
+/* 内容区 */
+.sum{flex:0 0 auto;padding:9px 20px 4px;font-size:10.5px;color:var(--ink3);letter-spacing:.6px;display:flex;gap:6px;align-items:baseline}
+.sum b{color:var(--brass);font-weight:500}
+.sum .r{margin-left:auto;flex:0 0 auto}
+.list{flex:1 1 auto;overflow-y:auto;padding:2px 20px 86px}
+
+/* 卷列表 */
+.bk{display:flex;align-items:center;gap:11px;padding:11px 2px;border-bottom:1px solid rgba(228,219,201,.75);cursor:pointer}
+.bk:active{background:#F1E9D9}
+.bk .nm{font-family:var(--serif);font-size:14.5px;letter-spacing:.6px}
+.bk .meta{font-size:10px;color:var(--ink3);letter-spacing:.4px;margin-top:2px}
+.bk .go{margin-left:auto;color:#B9AE9C;font-size:12px}
+
+/* 字卡：一行一张 */
+.crow{display:flex;align-items:center;gap:12px;padding:11px 2px;border-bottom:1px solid rgba(228,219,201,.75);cursor:pointer}
+.crow:active{background:#F1E9D9}
+.cc{flex:0 0 46px;height:54px;display:flex;align-items:center;justify-content:center;
+  font-family:var(--serif);font-size:33px;line-height:1;letter-spacing:0;color:var(--ink);
+  background:var(--paper2);border:1px solid var(--line);border-radius:9px}
+.cm{flex:1 1 auto;min-width:0}
+.cn{font-family:Georgia,serif;font-size:9.5px;color:var(--brass);letter-spacing:.6px}
+.cb{font-size:10.5px;color:var(--ink3);letter-spacing:.3px;margin-top:4px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cr{flex:0 0 auto;font-size:10px;color:var(--ink3);font-variant-numeric:tabular-nums}
+.cr b{font-size:13px;color:var(--ink2);font-weight:600}
+.cs{flex:0 0 auto;font-size:8.5px;color:var(--brass);border:1px solid rgba(138,106,59,.28);
+  border-radius:4px;padding:2px 5px;letter-spacing:.5px;background:rgba(138,106,59,.05)}
+.empty{padding:46px 16px;text-align:center;color:var(--ink3);font-size:12px;line-height:1.9}
+
+/* 底栏 */
+.tabbar{flex:0 0 auto;display:flex;border-top:1px solid var(--line);background:rgba(252,249,242,.96);padding:9px 6px calc(9px + env(safe-area-inset-bottom))}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--ink3);position:relative;padding-top:5px}
+.tab svg{width:21px;height:21px}
+.tab span{font-size:10.5px;letter-spacing:1.4px}
+.tab.on{color:var(--brass)}.tab.on span{font-weight:600}
+.tab.on:before{content:"";position:absolute;top:-6px;width:20px;height:2px;border-radius:2px;background:var(--brass)}
+
+
+/* ── 词卡版式 ── */
+.wcc{font-family:var(--serif);font-size:17px;letter-spacing:1px}
+.wfront{padding:30px 24px 22px}
+.wfront .stats{justify-content:center}
+.wfront .words{justify-content:center}
+.wword{font-family:var(--serif);font-size:62px;line-height:1.2;letter-spacing:6px;text-align:center;margin-top:2px;
+  background:linear-gradient(160deg,#3A342B 10%,#26231E 55%,#4A4030 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.wpy{font-family:Georgia,serif;font-size:12.5px;color:var(--brass);letter-spacing:3px;text-align:center;margin-top:22px}
+.wpos{text-align:center;margin-top:7px}
+.wpos span{font-size:9.5px;color:var(--ink3);border:1px solid var(--line);border-radius:999px;padding:2px 8px;letter-spacing:1px}
+.wback{padding:26px 24px 20px}
+.wsen{display:flex;gap:7px;align-items:baseline;font-size:10.5px;color:var(--ink2);line-height:1.75;margin-bottom:3px}
+.wsen .k{color:var(--brass);font-family:Georgia,serif;flex:0 0 auto}
+.wsen .nm{flex:1 1 auto}
+.wsen .rf{flex:0 0 auto;font-size:9px;color:var(--ink3);letter-spacing:.3px}
+.wgo{position:sticky;bottom:10px;z-index:6;margin-top:4px;letter-spacing:1px;font-size:12px;color:#fff;background:var(--brass);border:none;
+  border-radius:999px;padding:10px 20px;cursor:pointer;box-shadow:0 6px 16px rgba(138,106,59,.25)}
+.wgo:active{transform:scale(.97)}
+
+/* 卡片详情 */
+.mask{position:absolute;inset:0;background:rgba(30,26,20,.42);opacity:0;pointer-events:none;transition:opacity .2s;z-index:9}
+.mask.on{opacity:1;pointer-events:auto}
+.detail{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:18px 0 78px;overflow-y:auto;overscroll-behavior:contain;z-index:10;opacity:0;pointer-events:none;transition:opacity .22s}
+.detail.on{opacity:1;pointer-events:auto}
+.flip{width:322px;height:400px;perspective:1400px;cursor:pointer}
+.inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .62s cubic-bezier(.2,.8,.2,1)}
+.flip.flipped .inner{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:var(--paper2);
+  border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 18px 40px rgba(40,30,10,.22);display:flex;flex-direction:column}
+.face.back{transform:rotateY(180deg)}
+.corner{position:absolute;left:22px;top:16px;width:26px;height:2px;background:var(--brass);opacity:.55;border-radius:2px}
+.idx{position:absolute;right:20px;top:14px;font-size:9.5px;color:var(--ink3);letter-spacing:2px}
+.front{padding:30px 24px 22px}
+.charbox{display:flex;align-items:flex-end;gap:14px;margin-top:10px}
+.bigc{font-family:var(--serif);font-size:104px;line-height:.92;letter-spacing:2px;
+  background:linear-gradient(160deg,#3A342B 10%,#26231E 55%,#4A4030 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.pyr{font-family:Georgia,serif;font-size:13px;color:var(--brass);letter-spacing:1px;padding-bottom:16px}
+.stats{display:flex;gap:16px;margin-top:18px;font-size:10px;color:var(--ink3);letter-spacing:.6px}
+.stats b{font-size:15px;color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums;margin-right:3px}
+.ordnote{margin-top:7px;font-size:9px;color:var(--ink3);letter-spacing:.4px}
+.words{margin-top:13px;display:flex;flex-wrap:wrap;gap:7px}
+.w{padding:5px 9px;border:1px solid var(--line);border-radius:999px;font-size:11px;color:var(--ink2);background:var(--paper)}
+.w b{color:var(--brass);font-weight:500;margin-left:3px;font-size:9.5px}
+.vs{margin-top:auto;border-top:1px solid rgba(228,219,201,.8);padding-top:12px}
+.face.tight .vs{padding-top:8px}
+.face.tight .dist{margin-top:8px}
+.face.tight .dhd{margin-bottom:5px}
+.face.tight .bvs{padding-top:8px}
+.vs .q{font-family:var(--serif);font-size:14px;line-height:1.92;color:var(--ink)}
+.vs .r{margin-top:7px;font-size:9.5px;color:var(--brass);letter-spacing:1.5px}
+.back{padding:28px 24px 22px}
+.bh{display:flex;align-items:baseline;gap:10px}
+.bh .c{font-family:var(--serif);font-size:22px;letter-spacing:2px}
+.bh .p{font-size:9.5px;color:var(--ink3);letter-spacing:1.4px}
+.def{margin-top:14px;font-size:11.5px;line-height:2.05;color:var(--ink2);text-align:justify}
+.def b{color:var(--ink)}
+.dist{margin-top:12px}
+.dhd{font-size:9px;color:var(--ink3);letter-spacing:.6px;margin-bottom:6px}
+.drow{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.dl{flex:0 0 64px;font-size:9.5px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dt{flex:1 1 auto;height:5px;background:#EEE7D8;border-radius:3px;overflow:hidden}
+.dt i{display:block;height:100%;background:var(--brass2);border-radius:3px}
+.dn{flex:0 0 32px;text-align:right;font-size:9.5px;color:var(--ink3);font-variant-numeric:tabular-nums}
+.drest{margin-top:1px;font-size:9px;color:var(--ink3);letter-spacing:.3px}
+.bvs{margin-top:auto;border-top:1px solid rgba(228,219,201,.8);padding-top:12px}
+.bvs .q{font-family:var(--serif);font-size:13.6px;line-height:1.9}
+.bvs .r{margin-top:7px;font-size:9.5px;color:var(--brass);letter-spacing:1.5px}
+
+.lkrow{display:inline-flex;flex-wrap:wrap;align-items:center;gap:7px;justify-content:center;
+  margin:14px auto 0;padding:7px 13px;background:var(--paper2);border:1px solid var(--line);
+  border-radius:999px;box-shadow:0 6px 18px rgba(38,35,30,.13)}
+.lkw{font-size:10px;letter-spacing:2px;color:var(--brass)}
+.lkchip{background:var(--paper);border:1px solid rgba(181,146,79,.45);border-radius:999px;
+  padding:4px 11px;font-size:11px;color:var(--ink);letter-spacing:.4px;cursor:pointer;white-space:nowrap}
+.lkchip:active{background:rgba(181,146,79,.22)}
+#detail .lkrow{position:relative;z-index:3}
+.dhint{font-size:10px;color:#D8CBB4;letter-spacing:2px}
+.close{position:absolute;right:22px;top:64px;width:30px;height:30px;border-radius:50%;background:rgba(252,249,242,.16);
+  color:#F3EADA;display:flex;align-items:center;justify-content:center;font-size:15px;z-index:11;cursor:pointer}
+.toast{position:absolute;left:50%;bottom:110px;transform:translate(-50%,10px);background:rgba(38,35,30,.92);color:#F6F2E8;
+  font-size:11.5px;letter-spacing:1px;padding:9px 16px;border-radius:999px;opacity:0;pointer-events:none;transition:all .25s;z-index:20}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+
+/* ═══ 节卡（当前 1 张：约翰福音 3:16）═══ */
+.vfront{padding:22px 24px 18px}
+.vtext{flex:1;display:flex;align-items:center;justify-content:center;font-family:var(--serif);
+  line-height:1.92;color:var(--ink);letter-spacing:.4px;text-align:justify;padding:6px 2px}
+.vref{text-align:center}
+.vref .r1{font-family:var(--serif);font-size:13px;letter-spacing:2px;color:var(--ink)}
+.vref .r2{font-size:9.5px;color:var(--ink3);letter-spacing:1px;margin-top:5px}
+.vback{padding:20px 24px 18px}
+.vbh{display:flex;align-items:baseline;gap:8px;font-size:9.5px;color:var(--ink3);letter-spacing:1.6px}
+.vbh b{font-family:var(--serif);font-size:15px;color:var(--ink);letter-spacing:1px;font-weight:400}
+.vbh .n{margin-left:auto;font-size:8.5px;color:var(--brass)}
+.vtrack{margin:11px 0 2px}
+.vbar{position:relative;height:5px;border-radius:3px;background:#E7DFCE}
+.vbar i{position:absolute;left:0;top:0;bottom:0;border-radius:3px;background:rgba(138,106,59,.28)}
+.vbar b{position:absolute;top:-3.5px;width:2px;height:12px;background:var(--brass);border-radius:1px;
+  transform:translateX(-1px);box-shadow:0 0 0 1.5px rgba(138,106,59,.14)}
+.vtl{display:flex;justify-content:space-between;font-size:9px;color:var(--ink3);letter-spacing:.6px;margin-top:6px}
+.vtl span:nth-child(2){color:var(--brass);letter-spacing:1px}
+.vctx{margin-top:8px;padding-top:7px;border-top:1px dashed rgba(228,219,201,.95)}
+.vctx .k{font-size:8.5px;color:var(--brass);letter-spacing:1.5px;margin-bottom:3px}
+.vctx .t{font-family:var(--serif);font-size:10.5px;line-height:1.62;color:var(--ink2);
+  display:block;overflow:visible;white-space:normal}
+.face.back{overflow-y:auto}                 /* 经文完整显示后若超高，可滚动 */
+.vlks{margin-top:14px;padding-top:8px;border-top:1px dashed rgba(228,219,201,.95)}
+.vlks .h{font-size:8.5px;color:var(--brass);letter-spacing:1.5px;margin-bottom:5px}
+.vlk{display:flex;align-items:baseline;gap:6px;padding:1.5px 0;font-size:10.5px;line-height:1.32;color:var(--ink)}
+.vlk .w{font-family:var(--serif);font-size:12px;letter-spacing:1px}
+.vlk .n{font-size:8.5px;color:var(--ink3)}
+.vlk .tag{margin-left:auto;font-size:8.5px;color:var(--brass);border:1px solid var(--line);
+  border-radius:999px;padding:1px 6px;letter-spacing:.6px}
+.vlk.off{opacity:.55} .vlk.off .tag{color:var(--ink3)}
+.vbfoot{margin-top:auto;display:flex;justify-content:space-between;font-size:8.5px;color:var(--ink3);
+  letter-spacing:.8px;padding-top:7px}
+.vcell{width:46px;height:54px;flex:0 0 46px;border-radius:9px;border:1px solid var(--line);background:var(--paper2);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.15}
+.vcell b{font-family:var(--serif);font-size:16px;color:var(--ink);font-weight:400;letter-spacing:.5px}
+.vcell span{font-size:9px;color:var(--brass);letter-spacing:.3px;margin-top:2px;font-variant-numeric:tabular-nums}
+
+/* ═══ 章卡（当前 1 张：约翰福音 第 3 章）═══ */
+.chfront{padding:18px 21px}
+.chhead{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;margin-top:22px}
+.chbk{font-family:var(--serif);font-size:23px;letter-spacing:6px;color:var(--ink)}
+.chcn{display:flex;align-items:baseline;gap:5px;margin-top:2px}
+.chnum{font-family:var(--serif);font-size:54px;line-height:1.08;
+  background:linear-gradient(160deg,#3A342B 10%,#26231E 55%,#4A4030 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.chunit{font-family:var(--serif);font-size:16px;color:var(--brass);letter-spacing:2px}
+.chpos{font-size:9.5px;color:var(--ink3);letter-spacing:1.2px;margin-top:3px}
+.chvwrap{flex:1;display:flex;flex-direction:column;justify-content:center;padding:6px 0}
+.chvs{padding-top:8px;border-top:1px dashed rgba(228,219,201,.95);width:100%}
+.chvs .k{font-size:8.5px;color:var(--brass);letter-spacing:1.5px;margin-bottom:3px}
+.chvs .t{font-family:var(--serif);font-size:11.5px;line-height:1.75;color:var(--ink)}
+.chstat{text-align:center;font-size:9.5px;color:var(--ink3);letter-spacing:1px;margin-top:auto}
+.chback{padding:18px 21px}
+.chrow{display:flex;align-items:baseline;gap:7px;font-size:9px;color:var(--ink3);letter-spacing:1.1px;white-space:nowrap}
+.chrow b{font-family:var(--serif);font-size:14px;color:var(--ink);letter-spacing:1px;font-weight:400}
+.chrow .n{margin-left:auto;font-size:8.5px;color:var(--brass)}
+.chmain{margin-top:6px;font-size:11.5px;color:var(--ink2)}
+.chmain b{font-family:var(--serif);font-size:13px;color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+.chmeta{margin-top:2px;font-size:8.8px;color:var(--ink3)}
+.chkvh{margin-top:7px;padding-top:5px;border-top:1px dashed rgba(228,219,201,.95);
+  font-size:8.5px;color:var(--brass);letter-spacing:1.4px}
+.chkv{padding:3px 0;border-bottom:1px solid rgba(228,219,201,.45)}
+.chkv .r{display:block;font-size:8.4px;color:var(--brass);letter-spacing:.7px;margin-bottom:1px}
+.chkv .t{display:block;font-family:var(--serif);font-size:10.8px;line-height:1.62;color:var(--ink);text-align:justify}
+.face.chTight .chkvh{margin-top:4px;padding-top:3px}
+.face.chTight .chkv{padding:1.5px 0}
+.face.chTight .chkw{margin-top:4px}
+.chkw{margin-top:7px;font-size:9px;color:var(--ink3);letter-spacing:.3px}
+.chkw .h{font-size:8.4px;color:var(--brass);letter-spacing:1.3px;margin-right:5px}
+.chkw span{margin-right:8px}
+.chkw b{color:var(--ink2);font-weight:600;font-size:9.3px;margin-left:2px}
+.chlks{margin-top:9px;padding-top:6px;border-top:1px dashed rgba(228,219,201,.95)}
+.chlks .h{font-size:8.4px;color:var(--brass);letter-spacing:1.3px;margin-bottom:2px}
+.chlk{display:flex;align-items:baseline;gap:7px;padding:1px 0;font-size:9.8px;color:var(--ink)}
+.chlk .lw{font-family:var(--serif);font-size:11px;letter-spacing:.3px}
+.chlk .tag{margin-left:auto;font-size:8.4px;color:var(--brass);border:1px solid var(--line);border-radius:999px;padding:0 6px}
+.chfoot{margin-top:auto;display:flex;justify-content:space-between;font-size:8.5px;color:var(--ink3);letter-spacing:.8px;padding-top:3px}
+
+/* ── 上线版：全屏自适应（去掉演示用手机外壳）── */
+html,body{height:100%}
+body{padding:0!important;background:var(--paper)!important;display:block!important}
+.phone{width:100%!important;max-width:none!important;height:100dvh!important;
+  border-radius:0!important;box-shadow:none!important;margin:0!important}
+.status{padding-top:env(safe-area-inset-top)}
+@media (min-width:520px) and (pointer:fine){
+  body{display:flex!important;justify-content:center;background:#191713!important}
+  .phone{max-width:430px!important;height:min(100dvh,932px)!important;border-radius:18px!important;
+    box-shadow:0 24px 60px rgba(0,0,0,.45)!important}
+}
+</style>
+<style id="tablet-css">
+/* ── 平板适配（宽度 ≥700px 生效） ── */
+@media (min-width: 560px){
+  .phone{max-width:none!important;width:100%!important;height:100dvh!important;
+         border-radius:0!important;box-shadow:none!important}
+  .status{display:none!important}
+  .tabbar{padding:14px 12px calc(14px + env(safe-area-inset-bottom))}
+  .tab svg{width:24px;height:24px}
+  .tab span{font-size:12px;letter-spacing:2px}
+}
+@media (min-width: 560px) and (max-width: 999px){
+  .phone{border-radius:0!important}
+}
+
+@media (min-width: 560px){
+  .top{padding:14px 32px 10px}
+  .bodywrap,.body{padding-left:28px;padding-right:28px}
+  #list{display:grid!important;grid-template-columns:1fr 1fr;column-gap:26px;align-content:start}
+  #list .crow{border-bottom:1px solid rgba(228,219,201,.75)}
+  .flip{transform:scale(1.06)}
+  .srch{max-width:560px}
+}
+@media (min-width: 1100px){
+  #list{grid-template-columns:1fr 1fr 1fr}
+}
+
+/* JS 兜底：媒体查询在部分 WebView 不生效时，用 class 兜住平板宽度 */
+html.tab-wide .phone{max-width:none!important;width:100%!important;height:100vh!important;height:100dvh!important}
+html.tab-wide .status{display:none!important}
+</style>
+<style id="hard-css">
+/* 全局防压缩：文字永不逐字换行（部分 WebView 会把容器算窄） */
+html,body{-webkit-text-size-adjust:100%!important;text-size-adjust:100%!important}
+.tab span,.chip,.tagline .tw,.swipe span{white-space:nowrap!important}
+</style>
+<style id="prefs-css">
+/* 夜间 */
+html[data-theme="night"]{--paper:#141210;--paper2:#1C1915;--ink:#EDE6D8;--ink2:#B8AE9D;--ink3:#8B8172;
+  --line:#2E2A23;--brass:#C9A063;--brass2:#E2C089;--brass-soft:rgba(201,160,99,.14)}
+html[data-theme="night"] body{background:#0B0908!important}
+/* 正文字号倍数 */
+html[data-fs="s"]{--fsx:.92} html[data-fs="m"]{--fsx:1}
+html[data-fs="l"]{--fsx:1.1} html[data-fs="xl"]{--fsx:1.2}
+html[data-fs="s"] .zv,html[data-fs="l"] .zv,html[data-fs="xl"] .zv{letter-spacing:.4px}
+html[data-fs="s"] .zvref,html[data-fs="l"] .zvref,html[data-fs="xl"] .zvref{font-size:calc(12.5px*var(--fsx))!important}
+html[data-fs="s"] .zvsub,html[data-fs="l"] .zvsub,html[data-fs="xl"] .zvsub{font-size:calc(9px*var(--fsx))!important}
+html[data-fs="s"] .zfirst,html[data-fs="l"] .zfirst,html[data-fs="xl"] .zfirst{font-size:calc(10px*var(--fsx))!important}
+html[data-fs="s"] .vs .q,html[data-fs="l"] .vs .q,html[data-fs="xl"] .vs .q{font-size:calc(14px*var(--fsx))!important}
+html[data-fs="s"] .bvs .q,html[data-fs="l"] .bvs .q,html[data-fs="xl"] .bvs .q{font-size:calc(13.6px*var(--fsx))!important}
+html[data-fs="s"] .chkv .t,html[data-fs="l"] .chkv .t,html[data-fs="xl"] .chkv .t{font-size:calc(10.8px*var(--fsx))!important}
+html[data-fs="s"] .def,html[data-fs="l"] .def,html[data-fs="xl"] .def{font-size:calc(11.5px*var(--fsx))!important}
+html[data-fs="s"] .ref,html[data-fs="l"] .ref,html[data-fs="xl"] .ref{font-size:calc(11.5px*var(--fsx))!important}
+</style>
+</head>
+<script id="xj-prefs-early">
+(function(){try{var p=JSON.parse(localStorage.getItem('xj_prefs')||'{}');
+if(p.theme)document.documentElement.dataset.theme=p.theme;
+if(p.fs)document.documentElement.dataset.fs=p.fs;}catch(e){}})();
+</script>
+<body>
+<div class="phone">
+  <div class="status"><span>9:41</span><span class="b"></span></div>
+  <div class="top">
+    <h1>迦南</h1>
+    <div class="n" id="hcount">字卡 6 / 3,028</div>
+    <div class="acts">
+      <div class="music" id="music" title="敬拜">
+        <svg viewBox="0 0 24 24"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></svg>
+        <span class="eq"><i></i><i></i><i></i></span>
+        <span class="ring"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="srch" id="srch">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.6"/><path d="M16.2 16.2 21 21"/></svg>
+    <input id="q" placeholder="搜索字卡 / 拼音 / 相关词 / 编号" autocomplete="off">
+    <span class="clr" id="qclr">✕</span>
+  </div>
+
+  <div class="filters" id="filters"></div>
+  <div class="sum" id="sum"></div>
+  <div class="list" id="list"></div>
+
+  <div class="tabbar">
+    <div class="tab"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="m15.1 8.9-1.8 4.4-4.4 1.8 1.8-4.4z"/></svg><span>寻见</span></div>
+    <div class="tab on"><svg viewBox="0 0 24 24"><path d="M11.2 6.2C9.6 5 7.4 4.4 4.5 4.4v13.2c2.9 0 5.1.6 6.7 1.8 1.6-1.2 3.8-1.8 6.7-1.8V4.4c-2.9 0-5.1.6-6.7 1.8z"/><path d="M11.2 6.2v13.2"/></svg><span>迦南</span></div>
+    <div class="tab"><svg viewBox="0 0 24 24"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></svg><span>敬拜</span></div>
+    <div class="tab"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c1.2-3.8 3.6-5.4 7-5.4S17.8 16.2 19 20"/></svg><span>圣殿</span></div>
+  </div>
+
+  <div class="mask" id="mask"></div>
+  <div class="detail" id="detail"></div>
+  <div class="toast" id="toast"></div>
+</div>
+
+<script src="js/fx.js"></script>
+<script src="js/unlock.js"></script>
+<script>
+/* ═══ 数据 ═══ */
+const RAW = [
+["创世记","旧约","律法书",50],["出埃及记","旧约","律法书",40],["利未记","旧约","律法书",27],
+["民数记","旧约","律法书",36],["申命记","旧约","律法书",34],
+["约书亚记","旧约","历史书（旧）",24],["士师记","旧约","历史书（旧）",21],["路得记","旧约","历史书（旧）",4],
+["撒母耳记（上）","旧约","历史书（旧）",31],["撒母耳记（下）","旧约","历史书（旧）",24],
+["列王记（上）","旧约","历史书（旧）",22],["列王记（下）","旧约","历史书（旧）",25],
+["历代志（上）","旧约","历史书（旧）",29],["历代志（下）","旧约","历史书（旧）",36],
+["以斯拉记","旧约","历史书（旧）",10],["尼希米记","旧约","历史书（旧）",13],["以斯帖记","旧约","历史书（旧）",10],
+["约伯记","旧约","诗歌智慧书",42],["诗篇","旧约","诗歌智慧书",150],["箴言","旧约","诗歌智慧书",31],
+["传道书","旧约","诗歌智慧书",12],["雅歌","旧约","诗歌智慧书",8],
+["以赛亚书","旧约","大先知书",66],["耶利米书","旧约","大先知书",52],["耶利米哀歌","旧约","大先知书",5],
+["以西结书","旧约","大先知书",48],["但以理书","旧约","大先知书",12],
+["何西阿书","旧约","小先知书",14],["约珥书","旧约","小先知书",3],["阿摩司书","旧约","小先知书",9],
+["俄巴底亚书","旧约","小先知书",1],["约拿书","旧约","小先知书",4],["弥迦书","旧约","小先知书",7],
+["那鸿书","旧约","小先知书",3],["哈巴谷书","旧约","小先知书",3],["西番雅书","旧约","小先知书",3],
+["哈该书","旧约","小先知书",2],["撒迦利亚书","旧约","小先知书",14],["玛拉基书","旧约","小先知书",4],
+["马太福音","新约","福音书",28],["马可福音","新约","福音书",16],["路加福音","新约","福音书",24],["约翰福音","新约","福音书",21],
+["使徒行传","新约","历史书（新）",28],
+["罗马书","新约","保罗书信",16],["哥林多前书","新约","保罗书信",16],["哥林多后书","新约","保罗书信",13],
+["加拉太书","新约","保罗书信",6],["以弗所书","新约","保罗书信",6],["腓立比书","新约","保罗书信",4],
+["歌罗西书","新约","保罗书信",4],["帖撒罗尼迦（前书）","新约","保罗书信",5],["帖撒罗尼迦（后书）","新约","保罗书信",3],
+["提摩太（前书）","新约","保罗书信",6],["提摩太（后书）","新约","保罗书信",4],["提多书","新约","保罗书信",3],
+["腓利门书","新约","保罗书信",1],
+["希伯来书","新约","普通书信",13],["雅各书","新约","普通书信",5],["彼得前书","新约","普通书信",5],
+["彼得后书","新约","普通书信",3],["约翰一书","新约","普通书信",5],["约翰二书","新约","普通书信",1],
+["约翰三书","新约","普通书信",1],["犹大书","新约","普通书信",1],
+["启示录","新约","启示录",22]
+];
+const BOOKS = RAW.map((b,i)=>({i, n:b[0], t:b[1], g:b[2], c:b[3]}));
+
+/* ═══ 词卡（当前仅「慈爱」，数据实测自 corpus）═══ */
+
+/* 字卡：全部数值取自经文本体统计（corpus.json），释义据原文词 */
+
+/* ═══ 筛选 ═══ */
+const F = {
+  state:["遇见","浏览","喜欢","未学","已学","复习","掌握"],
+  test:["旧约","新约"],
+  genre:["律法书","历史书（旧）","诗歌智慧书","大先知书","小先知书","福音书","历史书（新）","保罗书信","普通书信","启示录"],
+  card:["字卡","词卡","节卡","章卡"]
+};
+const GENRE_OF_TEST = {"律法书":"旧约","历史书（旧）":"旧约","诗歌智慧书":"旧约","大先知书":"旧约","小先知书":"旧约",
+  "福音书":"新约","历史书（新）":"新约","保罗书信":"新约","普通书信":"新约","启示录":"新约"};
+const S = {state:null, test:null, genre:null, bookIdx:null, card:"字卡"};   // 默认进字卡视图
+const BUILD = '202611201832';                 // 数据缓存版本
+let Q = '';
+
+/* ═══ 统一数据层：index.json（基座+链接） + 四类内容文件 ═══ */
+let IDX = null, CARDS = [], WORDS = [], VERSES = [], CHAPTERS = [];
+const VMAP = {};                    // 预聚合：{type:{book:{},genre:{},test:{}}}
+/* 首屏只拉「索引 + 字卡」，其余三类后台补（首屏 2MB → 约 750KB） */
+let REST_LOADING = null;
+function _get(u){ return fetch(u + '?v=' + BUILD).then(r => r.json()); }
+async function loadCore(){
+  const got = await Promise.all([_get('data/index.json'), _get('data/cards.json')]);
+  IDX = got[0]; CARDS = got[1];
+  buildVMAP();
+}
+function loadRest(){
+  if (REST_LOADING) return REST_LOADING;
+  REST_LOADING = Promise.all([_get('data/words_index.json'), _get('data/verses.json'), _get('data/chapters.json')])
+    .then(function(got){
+      WORDS = got[0]; CHAPTERS = got[2];
+      VERSES = Array.isArray(got[1]) && got[1][0] && Array.isArray(got[1][0])
+        ? got[1].map(function(r, i){ return { no: i + 1, b: r[0], c: r[1], v: r[2], len: r[3] }; })
+        : got[1];
+      buildVMAP();
+      return true;
+    }).catch(function(e){ console.warn('其余数据载入失败', e); return false; });
+  return REST_LOADING;
+}
+function readyFor(card){
+  if (card === '词卡') return WORDS.length > 0;
+  if (card === '节卡') return VERSES.length > 0;
+  if (card === '章卡') return CHAPTERS.length > 0;
+  return CARDS.length > 0;
+}
+async function loadLib(){ await loadCore(); }
+function bookOfChapter(b){ return BOOKS[b]; }
+function buildVMAP(){
+  /* 节卡：全量 31,104 张不在 index 里（锚点=自身坐标），直接从 verses 汇总 */
+  VMAP.z = {book:{}, genre:{}, test:{}};
+  VMAP.v = {book:{}, genre:{}, test:{}};
+  VERSES.forEach(function(e){
+    const B = bookOfChapter(e.b); if(!B) return;
+    VMAP.v.book[B.n] = (VMAP.v.book[B.n]||0) + 1;
+    VMAP.v.genre[B.g] = (VMAP.v.genre[B.g]||0) + 1;
+    VMAP.v.test[B.t]  = (VMAP.v.test[B.t]||0) + 1;
+  });
+  /* 字卡锚点是「卷→次数」，没有章节清单，单独汇总 */
+  const byName = {};
+  BOOKS.forEach(function(B){ byName[B.n] = B; });
+  CARDS.forEach(function(cd){
+    const bs = (cd.books || {}), seenG = {}, seenT = {};
+    Object.keys(bs).forEach(function(nm){
+      const B = byName[nm]; if(!B) return;
+      VMAP.z.book[B.n] = (VMAP.z.book[B.n]||0) + 1;
+      if(!seenG[B.g]){ seenG[B.g] = 1; VMAP.z.genre[B.g] = (VMAP.z.genre[B.g]||0) + 1; }
+      if(!seenT[B.t]){ seenT[B.t] = 1; VMAP.z.test[B.t]  = (VMAP.z.test[B.t]||0) + 1; }
+    });
+  });
+  VMAP.w = {book:{}, genre:{}, test:{}};
+  WORDS.forEach(function(w0){
+    const bs = (w0.books || {}), sg = {}, st = {};
+    Object.keys(bs).forEach(function(nm){
+      const B = byName[nm]; if(!B) return;
+      VMAP.w.book[B.n] = (VMAP.w.book[B.n]||0) + 1;
+      if(!sg[B.g]){ sg[B.g]=1; VMAP.w.genre[B.g] = (VMAP.w.genre[B.g]||0)+1; }
+      if(!st[B.t]){ st[B.t]=1; VMAP.w.test[B.t]  = (VMAP.w.test[B.t]||0)+1; }
+    });
+  });
+  ['cp'].forEach(function(t){
+    VMAP[t] = {book:{}, genre:{}, test:{}};
+    const g = (IDX && IDX[t]) || {};
+    Object.keys(g).forEach(function(id){
+      /* 一张卡在每个维度只计一次：该卡在这一卷/这一书类/这一约里出现过，就 +1 */
+      const seenB = {}, seenG = {}, seenT = {};
+      (g[id].chapters || []).forEach(function(pair){
+        const B = bookOfChapter(pair[0]); if(!B) return;
+        if(!seenB[B.n]){ seenB[B.n] = 1; VMAP[t].book[B.n] = (VMAP[t].book[B.n]||0) + 1; }
+        if(!seenG[B.g]){ seenG[B.g] = 1; VMAP[t].genre[B.g] = (VMAP[t].genre[B.g]||0) + 1; }
+        if(!seenT[B.t]){ seenT[B.t] = 1; VMAP[t].test[B.t]  = (VMAP[t].test[B.t]||0) + 1; }
+      });
+    });
+  });
+}
+
+/* ── 列表分页：一次 60 张，滚到底/点按钮追加 ── */
+const LIMIT = +(new URLSearchParams(location.search).get('limit') || 60);
+let SHOWN = LIMIT, LAST_SIG = '';
+function pg(list){ return list.slice(0, SHOWN); }
+/* 滚到底自动续载：不再显示按钮，到底自然长出下一批 */
+function moreHTML(total){
+  return total > SHOWN ? '<div class="sentinel" id="sentinel" aria-hidden="true"></div>' : '';
+}
+let _io = null;
+function bindMore(total){
+  if (total <= SHOWN) return;
+  const el = document.getElementById('sentinel');
+  if (!el) return;
+  if (_io) { _io.disconnect(); _io = null; }
+  let lock = false;
+  const grow = () => {
+    if (lock) return;
+    lock = true;
+    SHOWN = Math.min(total, SHOWN + LIMIT);
+    renderBody();
+    setTimeout(() => { lock = false; }, 200);
+  };
+  _io = new IntersectionObserver((entries) => {
+    if (entries.some(e => e.isIntersecting)) grow();
+  }, { rootMargin: '0px 0px 320px 0px' });
+  _io.observe(el);
+}
+
+function vcount(t, dim, val){ return (VMAP[t] && VMAP[t][dim] && VMAP[t][dim][val]) || 0; }
+function linksOf(type, no){
+  if(!IDX) return [];
+  const id = type + ':' + (type==='z' ? String(no).padStart(4,'0') : no);
+  const e = IDX[type] && IDX[type][id];
+  return e ? (e.links || []) : [];
+}
+
+async function loadCards(){ await loadLib(); }   // 兼容旧调用名
+
+/* ═══ 节卡：当前 1 张（约翰福音 3:16，全书第 26,137 节）═══ */
+/* ═══ 章卡：当前 1 张（约翰福音 第 3 章，全书第 1,000 章）═══ */
+function chapInBook(cp){ return Math.round(cp.c / cp.bk.chaps * 100); }
+
+
+/* 书卷简称（与经页、章页一致） */
+const ABBR = ["创","出","利","民","申","书","士","得","撒上","撒下","王上","王下","代上","代下","拉","尼","斯","伯","诗","箴",
+"传","歌","赛","耶","哀","结","但","何","珥","摩","俄","拿","弥","鸿","哈","番","该","亚","玛","太","可","路","约",
+"徒","罗","林前","林后","加","弗","腓","西","帖前","帖后","提前","提后","多","门","来","雅","彼前","彼后","约壹","约贰","约叁","犹","启"];
+function abbrOf(b){ return ABBR[b] || ''; }
+
+const VCH = {};
+async function verseText(e){
+  const key = e.b;
+  if(!VCH[key]){
+    const r = await fetch('data/b' + String(e.b+1).padStart(2,'0') + '.json');
+    VCH[key] = await r.json();
+  }
+  const lines = VCH[key].filter(r=>r[0]===e.c);
+  const i = lines.findIndex(r=>r[1]===e.v);
+  return {text:(i>=0?lines[i][2]:''), prev:(i>0?lines[i-1][2]:''), next:(lines[i+1]?lines[i+1][2]:''), chN:lines.length};
+}
+function verseStates(e){
+  const k = 'V' + e.no, out = [];
+  if(SEEN[k])   out.push('遇见');
+  if(VIEWED[k]) out.push('浏览');
+  if(LIKED[k])  out.push('喜欢');
+  { if(window.XJ && XJ.isFrozen && XJ.isFrozen('v', e.no) && out.indexOf('遇见') < 0) out.push('遇见');
+  const KIND = 'v', NO = e.no;  /* 学习态：未学＝已解锁未学完；已学＝学完；复习＝到期；掌握＝复习过 2 次以上 */
+  if(window.XJ){
+    const un = XJ.isUnlocked(KIND, NO), le = XJ.isLearned(KIND, NO);
+    if(un && !le) out.push('未学');
+    if(le){
+      out.push('已学');
+      const info = XJ.learnInfo ? XJ.learnInfo(KIND, NO) : null;
+      if(info){
+        if(info.due && info.due <= Date.now()) out.push('复习');
+        if((info.reps || 0) >= 2) out.push('掌握');
+      }
+    }
+  }
+  }
+  return out;
+}
+function versePrimary(e){
+  const a = verseStates(e);
+  return a.indexOf('喜欢')>=0 ? '喜欢' : (a.indexOf('浏览')>=0 ? '浏览' : (a.indexOf('遇见')>=0 ? '遇见' : ''));
+}
+function chapStates(x){
+  const k = 'C' + x.no, out = [];
+  if(SEEN[k])   out.push('遇见');
+  if(VIEWED[k]) out.push('浏览');
+  if(LIKED[k])  out.push('喜欢');
+  { if(window.XJ && XJ.isFrozen && XJ.isFrozen('cp', x.no) && out.indexOf('遇见') < 0) out.push('遇见');
+  const KIND = 'cp', NO = x.no;  /* 学习态：未学＝已解锁未学完；已学＝学完；复习＝到期；掌握＝复习过 2 次以上 */
+  if(window.XJ){
+    const un = XJ.isUnlocked(KIND, NO), le = XJ.isLearned(KIND, NO);
+    if(un && !le) out.push('未学');
+    if(le){
+      out.push('已学');
+      const info = XJ.learnInfo ? XJ.learnInfo(KIND, NO) : null;
+      if(info){
+        if(info.due && info.due <= Date.now()) out.push('复习');
+        if((info.reps || 0) >= 2) out.push('掌握');
+      }
+    }
+  }
+  }
+  return out;
+}
+function chapPrimary(x){
+  const a = chapStates(x);
+  return a.indexOf('喜欢')>=0 ? '喜欢' : (a.indexOf('浏览')>=0 ? '浏览' : (a.indexOf('遇见')>=0 ? '遇见' : ''));
+}
+function chapsMatched(){
+  return CHAPTERS.filter(x=>
+       (!Q || (x.book+' '+x.c).indexOf(Q)>=0 || String(x.no)===String(Q).replace(/^0+/,''))
+    && (!S.state || chapStates(x).indexOf(S.state)>=0)
+    && (!S.test  || x.test===S.test)
+    && (!S.genre || x.genre===S.genre)
+    && (S.bookIdx===null || x.book===BOOKS[S.bookIdx].n));
+}
+function vInTest(e,t){ return BOOKS[e.b].t===t; }
+function vInGenre(e,g){ return BOOKS[e.b].g===g; }
+function vInBook(e,n){ return BOOKS[e.b].n===n; }
+function versesMatched(){
+  return VERSES.filter(e=>
+       (!Q || String(e.no)===String(Q).replace(/^0+/,'') || (BOOKS[e.b].n+' '+e.c+':'+e.v).indexOf(Q)>=0)
+    && (!S.state || verseStates(e).indexOf(S.state)>=0)
+    && (!S.test  || vInTest(e,S.test))
+    && (!S.genre || vInGenre(e,S.genre))
+    && (S.bookIdx===null || vInBook(e, BOOKS[S.bookIdx].n)));
+}
+
+
+const qEl = document.getElementById('q');
+function tone(x){ return (x||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase(); }
+function hitCard(c, kw){
+  const raw = kw.trim(); if(!raw) return true;
+  const k = tone(raw);
+  return c.ch === raw
+      || tone(c.py).indexOf(k) >= 0
+      || String(c.no) === k || String(c.no).padStart(4,'0') === k
+      || (c.words||[]).some(w=>w[0].indexOf(raw) >= 0)
+      || (c.bk||'').indexOf(raw) >= 0;
+}
+
+const isCardView = ()=> S.card === "字卡";
+function genresAvailable(){ return F.genre.filter(g=>!S.test || GENRE_OF_TEST[g]===S.test); }
+function booksMatched(){
+  return BOOKS.filter(b=>(!S.test||b.t===S.test)&&(!S.genre||b.g===S.genre)&&(S.bookIdx===null||b.i===S.bookIdx));
+}
+function bookOf(c){ return BOOKS.find(b=>b.n===c.bk); }        // 出现最多的那一卷（仅用于展示）
+function cardVols(c){ return Object.keys(c.books).length; }
+function inBook(c,name){ return (c.books[name]||0) > 0; }
+function inTest(c,t){ return Object.keys(c.books).some(n=>{const b=BOOKS.find(x=>x.n===n); return b&&b.t===t;}); }
+function inGenre(c,g){ return Object.keys(c.books).some(n=>{const b=BOOKS.find(x=>x.n===n); return b&&b.g===g;}); }
+function wInBook(w, name){ return (w.books[name]||0) > 0; }
+function wInTest(w, t){ return Object.keys(w.books).some(n=>{const b=BOOKS.find(x=>x.n===n); return b && b.t===t;}); }
+function wInGenre(w, g){ return Object.keys(w.books).some(n=>{const b=BOOKS.find(x=>x.n===n); return b && b.g===g;}); }
+function wordBooks(){                       // 词卡实际出现过的卷（只列有经文的）
+  const set=new Set();
+  WORDS.forEach(w=>Object.keys(w.books).forEach(n=>{
+    const b=BOOKS.find(x=>x.n===n); if(!b) return;
+    if(S.test && b.t!==S.test) return;
+    if(S.genre && b.g!==S.genre) return;
+    set.add(n);
+  }));
+  return BOOKS.filter(b=>set.has(b.n)).map(b=>b.n);
+}
+function wordGenres(){
+  const set=new Set();
+  WORDS.forEach(w=>Object.keys(w.books).forEach(n=>{const b=BOOKS.find(x=>x.n===n); if(b&&(!S.test||b.t===S.test)) set.add(b.g);}));
+  return F.genre.filter(g=>set.has(g));
+}
+function hitWord(w, kw){
+  const raw = (kw||'').trim(); if(!raw) return true;
+  const k = tone(raw);
+  return w.w.indexOf(raw) >= 0 || w.py.replace(/[^a-zA-Z]/g,'').toLowerCase().indexOf(k) >= 0
+      || String(w.no) === k || ('W'+w.no).toLowerCase() === k.toLowerCase();
+}
+function wordsMatched(){
+  return WORDS.filter(w =>
+       (!Q || hitWord(w, Q))
+    && (!S.state || wordStates(w).indexOf(S.state) >= 0)
+    && (!S.test  || wInTest(w, S.test))
+    && (!S.genre || wInGenre(w, S.genre))
+    && (S.bookIdx===null || wInBook(w, BOOKS[S.bookIdx].n)));
+}
+function cardsMatched(){
+  if(S.card && S.card!=="字卡") return [];        // 词卡/节卡/章卡尚未制作
+  return CARDS.filter(c=>
+       (!Q || hitCard(c, Q))
+    && (!S.state || statesOf(c).indexOf(S.state) >= 0)
+    && (!S.test  || inTest(c, S.test))
+    && (!S.genre || inGenre(c, S.genre))
+    && (S.bookIdx===null || inBook(c, BOOKS[S.bookIdx].n)));
+}
+function cardGenres(){                       // 字卡实际出现过的书类
+  const set=new Set();
+  CARDS.forEach(c=>Object.keys(c.books).forEach(n=>{const b=BOOKS.find(x=>x.n===n); if(b&&(!S.test||b.t===S.test)) set.add(b.g);}));
+  return F.genre.filter(g=>set.has(g));
+}
+function cardBooks(){                        // 字卡实际出现过的卷（按正典顺序）
+  const set=new Set();
+  CARDS.forEach(c=>Object.keys(c.books).forEach(n=>{const b=BOOKS.find(x=>x.n===n);
+    if(!b) return;
+    if(S.test && b.t!==S.test) return;
+    if(S.genre && b.g!==S.genre) return;
+    set.add(n);}));
+  return BOOKS.filter(b=>set.has(b.n)).map(b=>b.n);
+}
+
+const elF=document.getElementById('filters');
+function chip(label,on,count,extra){
+  return `<button class="chip${on?' on':''}">${label}${count!==undefined?`<span class="c">${count}</span>`:''}${extra||''}</button>`;
+}
+let pool=[];
+const ALL = {label:"全部", val:null};
+function rowItems(key){
+  const cv = isCardView();
+  if(key==="state"){
+    const isW = S.card === '词卡', isV = S.card === '节卡', isC = S.card === '章卡', isAll = S.card === null;
+    const FROZ = (window.XJ && XJ.frozenTotal) ? XJ.frozenTotal() : 0;
+    return [ALL, ...F.state.map(v=>({label:v, val:v, count:
+      v === '遇见' ? FROZ :
+      (isAll ? CARDS.filter(c=>statesOf(c).indexOf(v)>=0).length + WORDS.filter(w=>wordStates(w).indexOf(v)>=0).length
+               + VERSES.filter(e=>verseStates(e).indexOf(v)>=0).length
+               + CHAPTERS.filter(x=>chapStates(x).indexOf(v)>=0).length
+       : isC  ? CHAPTERS.filter(x=>chapStates(x).indexOf(v)>=0).length
+       : isV  ? VERSES.filter(e=>verseStates(e).indexOf(v)>=0).length
+       : isW  ? WORDS.filter(w=>wordStates(w).indexOf(v)>=0).length
+              : CARDS.filter(c=>statesOf(c).indexOf(v)>=0).length)}))];
+  }
+  if(key==="test"){
+    const isW = S.card==='词卡', isV = S.card==='节卡', isC = S.card==='章卡', isAll = S.card===null;
+    return [ALL, ...F.test.map(v=>({label:v, val:v, count:
+      (isAll ? vcount('z','test',v)+vcount('w','test',v)+vcount('v','test',v)+vcount('cp','test',v)
+       : isC  ? vcount('cp','test',v)
+       : isV  ? vcount('v','test',v)
+       : isW  ? vcount('w','test',v)
+              : vcount('z','test',v))}))];
+  }
+  if(key==="genre"){
+    const isW = S.card==='词卡', isV = S.card==='节卡', isC = S.card==='章卡', isAll = S.card===null;
+    const vg = F.genre.filter(g=>vcount(isV?'v':'cp','genre',g) > 0);
+    const gs = (isV||isC) ? vg : isW ? wordGenres()
+      : (isAll ? F.genre.filter(g=>[...new Set([...cardGenres(), ...wordGenres(), ...vg])].includes(g)) : cardGenres());
+    return [ALL, ...gs.map(v=>({label:v, val:v, count:
+      (isAll ? vcount('z','genre',v)+vcount('w','genre',v)+vcount('v','genre',v)+vcount('cp','genre',v)
+       : isC  ? vcount('cp','genre',v)
+       : isV  ? vcount('v','genre',v)
+       : isW  ? vcount('w','genre',v)
+              : vcount('z','genre',v))}))];
+  }
+  if(key==="book"){
+    const isW = S.card==='词卡', isV = S.card==='节卡', isC = S.card==='章卡', isAll = S.card===null;
+    const list = (isV||isC) ? BOOKS.filter(B=>vcount(isV?'v':'cp','book',B.n) > 0).map(B=>B.n)
+      : isW ? wordBooks()
+      : (isAll ? BOOKS.map(b=>b.n).filter(n => vcount('z','book',n)+vcount('w','book',n)+vcount('v','book',n)+vcount('cp','book',n) > 0)
+               : cardBooks());
+    return [ALL, ...list.map(n=>({label:n, val:n, count:
+      (isAll ? vcount('z','book',n)+vcount('w','book',n)+vcount('v','book',n)+vcount('cp','book',n)
+       : isC  ? vcount('cp','book',n)
+       : isV  ? vcount('v','book',n)
+       : isW  ? vcount('w','book',n)
+              : vcount('z','book',n))}))];
+  }
+  const have = {"字卡":CARDS.length, "词卡":WORDS.length, "节卡":VERSES.length, "章卡":CHAPTERS.length};   // 全部=合计
+  return [ALL, ...F.card.map(v=>({label:v, val:v, count: have[v]}))];
+}
+function isOn(key, val){
+  if(val===null)  return key==="book" ? S.bookIdx===null : S[key]===null;
+  if(key==="book") return S.bookIdx!==null && BOOKS[S.bookIdx].n===val;
+  return S[key]===val;
+}
+function render(){
+  const card = isCardView();
+  const rows=[];
+  // 先算卷池，行顺序依赖它
+  pool = S.genre ? BOOKS.filter(b=>b.g===S.genre) : (S.test ? BOOKS.filter(b=>b.t===S.test) : BOOKS);
+
+  const defs = [
+    {k:"state", name:"态", off:false},
+    {k:"test",  name:"约", off:false},
+    {k:"genre", name:"书", off:false},
+    {k:"book",  name:"卷", off:false},
+    {k:"card",  name:"卡", off:false}
+  ];
+  defs.forEach(d=>{
+    const items = rowItems(d.k);
+    const cnt = d.k==="state" ? (S.state?CARDS.filter(c=>c.state===S.state).length:CARDS.length) : undefined;
+    rows.push(`<div class="frow${d.off?' off':''}"><div class="fname">${d.name}</div><div class="strip" data-k="${d.k}">${
+      items.map(it=>it.val===null
+        ? `<button class="chip${isOn(d.k,null)?' on':''} all">全部${
+            d.k==="card"?`<span class="c">${CARDS.length + WORDS.length + VERSES.length + CHAPTERS.length}</span>`:""}</button>`
+        : chip(it.label, isOn(d.k,it.val), it.count)
+      ).join('')}</div></div>`);
+  });
+
+  elF.innerHTML = rows.join('');
+
+  elF.querySelectorAll('.strip[data-k]').forEach(strip=>{
+    const key = strip.dataset.k;
+    strip.querySelectorAll('.chip').forEach((c,i)=>{
+      c.onclick = ()=> pick(key, rowItems(key)[i].val);
+    });
+  });
+  elF.querySelectorAll('.chip.on').forEach(c=>{
+    const s=c.parentElement;
+    const sr=s.getBoundingClientRect(), cr=c.getBoundingClientRect();
+    const L=cr.left-sr.left+s.scrollLeft, R=L+cr.width, pad=16;
+    let to=null;
+    if(R+pad > s.scrollLeft+s.clientWidth) to=L-46;
+    else if(L-pad < s.scrollLeft) to=R+pad-s.clientWidth;
+    if(to!==null) s.scrollTo({left:Math.max(0,to),behavior:'smooth'});
+  });
+  elF.querySelectorAll('.strip').forEach(s=>{
+    const upd=()=>s.classList.toggle('fade-l', s.scrollLeft>6);
+    upd(); s.addEventListener('scroll',upd,{passive:true}); enableDragScroll(s);
+  });
+
+  renderBody();
+}
+function chipValue(key,i){
+  const map={state:F.state,test:F.test,genre:genresAvailable(),card:F.card};
+  return map[key][i];
+}
+function pick(key,val){
+  if(val===null){                                  // 全部：清空该维度
+    if(key==='book') S.bookIdx=null; else S[key]=null;
+    render(); return;
+  }
+  if(key==='state') S.state = S.state===val?null:val;
+  else if(key==='card') S.card = S.card===val?null:val;
+  else if(key==='test'){ S.test=S.test===val?null:val; if(S.test&&S.genre&&GENRE_OF_TEST[S.genre]!==S.test)S.genre=null; S.bookIdx=null; }
+  else if(key==='genre'){ if(S.genre===val)S.genre=null; else {S.genre=val;S.test=GENRE_OF_TEST[val];S.bookIdx=null;} }
+  else if(key==='book'){                        // 卷最具体：选卷即清空约/书，避免互相锁死
+    const b=BOOKS.find(x=>x.n===val);
+    if(S.bookIdx===b.i) S.bookIdx=null;
+    else { S.bookIdx=b.i; S.test=null; S.genre=null; }
+  }
+  render();
+}
+
+/* ═══ 主体 ═══ */
+function renderBody(){
+  const list=document.getElementById('list'), sum=document.getElementById('sum');
+  if(!readyFor(S.card)){                       // 该视图数据还没到（后台加载中）
+    list.innerHTML = '<div class="empty">正在载入这一类卡片…</div>';
+    loadRest().then(function(){ render(); });
+    return;
+  }
+  const _sig = JSON.stringify(S) + '|' + Q;
+  if(_sig !== LAST_SIG){ LAST_SIG = _sig; SHOWN = LIMIT; }
+  const ms=xjUF(cardsMatched(), 'z');
+
+  if(S.card === '词卡'){
+    const ws = xjUF(wordsMatched(), 'w');
+    const parts=[];
+    if(S.test)parts.push(S.test); if(S.genre)parts.push(S.genre);
+    if(S.bookIdx!==null)parts.push(BOOKS[S.bookIdx].n);
+    if(S.state)parts.push('态 · '+S.state);
+    sum.innerHTML = `<span>${Q?`搜索「${Q}」`:(parts.length?parts.join(' · '):'词卡 · 全部')}</span>
+      <span class="r">${ws.length} 张</span>`;
+    document.getElementById('hcount').textContent = `词卡 ${ws.length} / ${WORDS.length.toLocaleString()}`;
+    list.innerHTML = (ws.length ? pg(ws).map(w=>`
+      <div class="crow" data-wno="${w.no}">
+        <div class="cc wcc">${w.w}</div>
+        <div class="cm">
+          <div class="cn">${w.py} · W${w.no}</div>
+          <div class="cb">${S.bookIdx!==null
+            ? `本卷 ${w.books[BOOKS[S.bookIdx].n]||0} 次 · 出现 ${Object.keys(w.books).length} 卷`
+            : `${w.pos} · 旧约 ${w.ot} / 新约 ${w.nt} · ${w.verses} 节`}</div>
+        </div>
+        <div class="cr"><b>${w.freq}</b> 次</div>
+        ${wordPrimary(w) ? `<div class="cs">${wordPrimary(w)}</div>` : ''}
+      </div>`).join('')
+      : `<div class="empty">没有匹配的词卡</div>`) + moreHTML(ws.length);
+    list.querySelectorAll('.crow').forEach(t=>t.onclick=()=>openWord(+t.dataset.wno));
+    bindMore(ws.length);
+    return;
+  }
+  if(S.card === '节卡'){
+    const vs = xjUF(versesMatched(), 'v'), e = versesMatched()[0];
+    const parts=[];
+    if(S.test)parts.push(S.test); if(S.genre)parts.push(S.genre);
+    if(S.bookIdx!==null)parts.push(BOOKS[S.bookIdx].n);
+    if(S.state)parts.push('态 · '+S.state);
+    sum.innerHTML = `<span>${Q?`搜索「${Q}」`:(parts.length?parts.join(' · '):'节卡 · 全部')}</span>
+      <span class="r">${vs.length} 张</span>`;
+    document.getElementById('hcount').textContent = `节卡 ${vs.length} / ${VERSES.length.toLocaleString()}`;
+    list.innerHTML = (vs.length ? pg(vs).map(e=>`<div class="crow" data-vno="${e.no}">
+        <div class="vcell"><b>${abbrOf(e.b)}</b><span>${e.c}:${e.v}</span></div>
+        <div class="cm"><div class="cn">节卡 №${e.no}</div>
+          <div class="cb">${BOOKS[e.b].n} ${e.c}:${e.v}</div></div>
+        <div class="cr">${e.len} 字</div>
+        ${versePrimary(e) ? `<div class="cs">${versePrimary(e)}</div>` : ''}</div>`).join('')
+      : `<div class="empty">没有匹配的节卡</div>`) + moreHTML(vs.length);
+    list.querySelectorAll('.crow[data-vno]').forEach(t=>t.onclick=()=>openVerse(+t.dataset.vno));
+    list.querySelectorAll('.crow[data-cno]').forEach(t=>t.onclick=()=>openChap(+t.dataset.cno));
+    bindMore(vs.length);
+    return;
+  }
+  if(S.card === '章卡'){
+    const all = xjUF(chapsMatched(), 'cp');
+    const parts=[];
+    if(S.test)parts.push(S.test); if(S.genre)parts.push(S.genre);
+    if(S.bookIdx!==null)parts.push(BOOKS[S.bookIdx].n);
+    if(S.state)parts.push('态 · '+S.state);
+    sum.innerHTML = `<span>${Q?`搜索「${Q}」`:(parts.length?parts.join(' · '):'章卡 · 全部')}</span>
+      <span class="r">${all.length} 张</span>`;
+    document.getElementById('hcount').textContent = `章卡 ${all.length} / 1,189`;
+    list.innerHTML = (all.length ? pg(all).map(x=>`<div class="crow" data-cno="${x.no}">
+        <div class="vcell"><b>${x.ab}</b><span>${x.c} 章</span></div>
+        <div class="cm"><div class="cn">章卡 №${x.no}</div>
+          <div class="cb">${x.book} ${x.c} 章</div></div>
+        <div class="cr">${x.n} 节</div>
+        ${chapPrimary(x) ? `<div class="cs">${chapPrimary(x)}</div>` : ''}</div>`).join('')
+      : `<div class="empty">没有匹配的章卡</div>`) + moreHTML(all.length);
+    list.querySelectorAll('.crow[data-cno]').forEach(t=>t.onclick=()=>openChap(+t.dataset.cno));
+    bindMore(all.length);
+    return;
+  }
+  if(S.card === null){
+    const cs = xjUF(cardsMatched(), 'z'), ws = xjUF(wordsMatched(), 'w');
+    const vs = xjUF(versesMatched(), 'v');
+    const chs = xjUF(chapsMatched(), 'cp');
+    const parts=[];
+    if(S.test)parts.push(S.test); if(S.genre)parts.push(S.genre);
+    if(S.bookIdx!==null)parts.push(BOOKS[S.bookIdx].n);
+    if(S.state)parts.push('态 · '+S.state);
+    sum.innerHTML = `<span>${Q?`搜索「${Q}」`:(parts.length?parts.join(' · '):'全部卡片')}</span>
+      <span class="r">${cs.length + ws.length + vs.length + chs.length} 张</span>`;
+    document.getElementById('hcount').textContent = `卡片 ${cs.length + ws.length + vs.length + chs.length} 张`;
+    const cardRows = cs.map(c=>{
+      const b=bookOf(c);
+      return `<div class="crow" data-no="${c.no}">
+        <div class="cc">${c.ch}</div>
+        <div class="cm"><div class="cn">${c.py} · №${String(c.no).padStart(4,'0')}</div>
+          <div class="cb">${S.bookIdx!==null ? `本卷 ${c.books[BOOKS[S.bookIdx].n]||0} 次 · 全书出现 ${cardVols(c)} 卷`
+            : `出现 ${cardVols(c)} 卷 · 最多 ${c.bk} ${c.bkN} 次`}</div></div>
+        <div class="cr"><b>${c.freq}</b> 次</div>
+        ${primaryState(c) ? `<div class="cs">${primaryState(c)}</div>` : ''}</div>`;
+    });
+    const wordRows = ws.map(w=>`
+      <div class="crow" data-wno="${w.no}">
+        <div class="cc wcc">${w.w}</div>
+        <div class="cm"><div class="cn">${w.py} · W${w.no}</div>
+          <div class="cb">${S.bookIdx!==null ? `本卷 ${w.books[BOOKS[S.bookIdx].n]||0} 次 · 出现 ${Object.keys(w.books).length} 卷`
+            : `${w.pos} · 旧约 ${w.ot} / 新约 ${w.nt} · ${w.verses} 节`}</div></div>
+        <div class="cr"><b>${w.freq}</b> 次</div>
+        ${wordPrimary(w) ? `<div class="cs">${wordPrimary(w)}</div>` : ''}</div>`);
+    const verseRows = vs.map(e=>`<div class="crow" data-vno="${e.no}">
+        <div class="vcell"><b>${abbrOf(e.b)}</b><span>${e.c}:${e.v}</span></div>
+        <div class="cm"><div class="cn">节卡 №${e.no}</div>
+          <div class="cb">${BOOKS[e.b].n} ${e.c}:${e.v}</div></div>
+        <div class="cr">${e.len} 字</div>
+        ${versePrimary(e) ? `<div class="cs">${versePrimary(e)}</div>` : ''}</div>`);
+    const chapRows = chs.map(x=>`<div class="crow" data-cno="${x.no}">
+        <div class="vcell"><b>${x.ab}</b><span>${x.c} 章</span></div>
+        <div class="cm"><div class="cn">章卡 №${x.no}</div>
+          <div class="cb">${x.book} ${x.c} 章</div></div>
+        <div class="cr">${x.n} 节</div>
+        ${chapPrimary(x) ? `<div class="cs">${chapPrimary(x)}</div>` : ''}</div>`);
+    const allRows = cardRows.concat(wordRows, verseRows, chapRows);
+    list.innerHTML = (allRows.length ? allRows.slice(0, SHOWN).join('') : `<div class="empty">这个分类下还没有卡片</div>`) + moreHTML(allRows.length);
+    list.querySelectorAll('.crow[data-no]').forEach(t=>t.onclick=()=>openCard(+t.dataset.no));
+    list.querySelectorAll('.crow[data-wno]').forEach(t=>t.onclick=()=>openWord(+t.dataset.wno));
+    list.querySelectorAll('.crow[data-vno]').forEach(t=>t.onclick=()=>openVerse(+t.dataset.vno));
+    list.querySelectorAll('.crow[data-cno]').forEach(t=>t.onclick=()=>openChap(+t.dataset.cno));
+    bindMore(cs.length + ws.length + vs.length + chs.length);
+    return;
+  }
+  if(S.card && S.card!=="字卡"){
+    sum.innerHTML = `<span>${S.card}</span><span class="r">尚未制作</span>`;
+    document.getElementById('hcount').textContent = `${S.card} 0 张`;
+    list.innerHTML = `<div class="empty">${S.card}还没做<br>先做完了字卡，再按同一范式往下推</div>`;
+    return;
+  }
+
+  const parts=[]; if(S.card)parts.push(S.card);
+  if(S.test)parts.push(S.test); if(S.genre)parts.push(S.genre);
+  if(S.bookIdx!==null)parts.push(BOOKS[S.bookIdx].n); if(S.state)parts.push('态 · '+S.state);
+  const head = Q ? `搜索「${Q}」` : (parts.length?parts.join(' · '):'全部卡片');
+  sum.innerHTML = `<span>${head}</span><span class="r">${ms.length} 张</span>`;
+
+  list.innerHTML = (ms.length ? pg(ms).map(c=>{
+    const b=bookOf(c);
+    return `<div class="crow" data-no="${c.no}">
+      <div class="cc">${c.ch}</div>
+      <div class="cm">
+        <div class="cn">${c.py} · №${String(c.no).padStart(4,'0')}</div>
+        <div class="cb">${
+          S.bookIdx!==null
+            ? `本卷 ${c.books[BOOKS[S.bookIdx].n]||0} 次 · 全书出现 ${cardVols(c)} 卷`
+            : `出现 ${cardVols(c)} 卷 · 最多 ${c.bk} ${c.bkN} 次`
+        }</div>
+      </div>
+      <div class="cr"><b>${c.freq}</b> 次</div>
+      ${primaryState(c) ? `<div class="cs">${primaryState(c)}</div>` : ''}
+    </div>`;}).join('')
+    : `<div class="empty">这个分类下还没有字卡<br>换一个分类看看</div>`) + moreHTML(ms.length);
+  list.querySelectorAll('.crow').forEach(t=>t.onclick=()=>openCard(+t.dataset.no));
+  bindMore(ms.length);
+
+  document.getElementById('hcount').textContent =
+    S.card==="字卡" ? `字卡 ${ms.length} / ${CARDS.length.toLocaleString()}` : `卡片 ${ms.length} / ${CARDS.length.toLocaleString()}`;
+}
+
+
+
+
+/* ═══ 节卡详情（正面经文 / 背面章脉 + 上下文 + 连到的卡）═══ */
+async function openVerse(no){
+  if(window.XJ && !XJ.isUnlocked('v', no)){ XJ.lockToast('v', no); return; }
+  CUR_ID = 'v:' + no;
+  const e = VERSES.find(x=>x.no===no); if(!e) return;
+  window.__curVerse = { b0: e.b, c: e.c, v: e.v };
+  markViewed('V' + no);
+  if(S.card === '节卡') render();
+  const B = BOOKS[e.b];
+  const d = await verseText(e).catch(()=>({text:'（正文载入失败）', prev:'', next:'', chN:e.v}));
+  const text = d.text || '（本节正文缺失）';
+  const chN = d.chN || e.v;
+  const pct = Math.min(100, Math.max(0, e.v / chN * 100));
+  const t = text.length;
+  const fs = t<=10?34 : t<=25?27 : t<=45?22 : t<=80?17.5 : 13.6;
+
+
+  detail.innerHTML = `
+    <div class="flip" id="flip"><div class="inner">
+      <div class="face front vfront">
+        <div class="corner"></div>
+        <div class="idx">节卡 №${e.no}</div>
+        <div class="vtext" style="font-size:${fs}px">${text}</div>
+        <div class="vref"><div class="r1">${B.n} ${e.c}:${e.v}</div>
+          <div class="r2">本章 ${chN} 节 · 第 ${e.v} 节 · ${e.len} 字</div></div>
+      </div>
+      <div class="face back vback">
+        <div class="corner"></div>
+        <div class="vbh"><b>章脉</b><span>第 ${e.c} 章 · ${chN} 节</span><span class="n">第 ${e.v} 节</span></div>
+        <div class="vtrack"><div class="vbar"><i style="width:${pct}%"></i><b style="left:${pct}%"></b></div>
+          <div class="vtl"><span>1</span><span>${e.c}:${e.v}</span><span>${chN}</span></div></div>
+        <div class="vctx"><div class="k">上文${d.prev?` · ${B.n} ${e.c}:${e.v-1}`:''}</div>
+          <div class="t">${d.prev || '本章首节'}</div></div>
+        <div class="vctx" style="border-top:none;padding-top:5px"><div class="k">下文${d.next?` · ${B.n} ${e.c}:${e.v+1}`:''}</div>
+          <div class="t">${d.next || '本章末节'}</div></div>
+        <div class="vbfoot"><span>全书第 ${e.no.toLocaleString()} 节</span><span>共 31,104 节</span></div>
+      </div>
+    </div></div>
+    <button class="wgo" id="vgo">读这一章 · ${B.n} ${e.c} ›</button>
+    ${xjLearnHTML('v', e.no, {})}
+    <div class="dhint">轻点卡片翻转 · 点空白处关闭</div>`;
+
+  mask.classList.add('on'); detail.classList.add('on');
+  try { fitFace(detail.querySelector('.face.front')); fitFace(detail.querySelector('.face.back')); } catch(e){}
+  attachLinks(CUR_ID, text);
+  document.getElementById('flip').onclick = ()=>document.getElementById('flip').classList.toggle('flipped');
+  document.getElementById('vgo').onclick = (ev)=>{ ev.stopPropagation();
+    location.href = '章页.html?b=' + (e.b+1) + '&c=' + e.c + '&v=' + e.v + '&vno=' + e.no; };
+}
+
+
+/* ═══ 章卡详情（正面：书卷+章号+章首 / 背面：书卷信息+三节重点经文）═══ */
+function openChap(no){
+  try { const _x = (typeof CHAPTERS!=='undefined') && CHAPTERS.find(z=>z.no===+no); if(_x) window.__curChap = {book:_x.book, c:_x.c}; } catch(e){}
+  if(window.XJ && !XJ.isUnlocked('cp', no)){ XJ.lockToast('cp', no); return; }
+  CUR_ID = 'cp:' + no;
+  const x = CHAPTERS.find(z=>z.no===no); if(!x) return;
+  markViewed('C' + x.no);
+  if(S.card === '章卡') render();
+  const inb = chapInBook(x);
+  let _picks = (x.picks || []).slice();
+  if(!_picks.length && x.first) _picks = [[1, '本章首节', x.first]];   // 兜底：经文一定要显示
+  const hasPicks = _picks.length > 0;
+  const rows = hasPicks
+    ? `<div class="chkvh">重点经文 · ${_picks.length} 节（全文）</div>` + _picks.map(p=>`<div class="chkv"><span class="r">${x.ab} ${x.c}:${p[0]} · ${p[1]}</span>
+      <span class="t">${p[2]}</span></div>`).join('')
+    : `<div class="chkvh">章末经文 · 全文</div>
+       <div class="chkv"><span class="r">${x.ab} ${x.c}:${x.n} · 章末</span><span class="t">${x.last}</span></div>`;
+  const kw = (x.kw || []).map(([w,n])=>`<span>${w}<b>${n}</b></span>`).join('');
+
+  detail.innerHTML = `
+    <div class="flip" id="flip"><div class="inner">
+      <div class="face front chfront">
+        <div class="corner"></div>
+        <div class="idx">章卡 №${x.no}</div>
+        <div class="chhead"><div class="chbk">${x.book}</div>
+          <div class="chcn"><span class="chnum">${x.c}</span><span class="chunit">章</span></div>
+          <div class="chpos">第 ${x.c} 章 / 全卷 ${x.bk.chaps} 章</div></div>
+        <div class="chvwrap"><div class="chvs">
+          <div class="k">章首 · ${x.ab} ${x.c}:1</div><div class="t">${x.first}</div>
+        </div></div>
+        <div class="chstat">${x.n} 节 · ${x.han} 字</div>
+      </div>
+      <div class="face back chback">
+        <div class="corner"></div>
+        <div class="chrow"><b>书卷</b><span>全书第 ${x.bk.no} 卷 / 66</span><span class="n">${x.test} · ${x.genre}</span></div>
+        <div class="chmain">${x.book} · <b>${x.bk.chaps}</b> 章 · <b>${x.bk.verses.toLocaleString()}</b> 节 · <b>${x.bk.han.toLocaleString()}</b> 字</div>
+        <div class="chmeta">占全书 ${x.bk.pct}% ｜ 节数居 66 卷第 ${x.bk.rank} ｜ ${x.genre} ${x.bk.gB} 卷共 ${x.bk.gV.toLocaleString()} 节</div>
+        ${rows}
+        <div class="chkw"><span class="h">章内词</span>${kw}</div>
+        <div class="chfoot"><span>全书第 ${x.no.toLocaleString()} 章</span><span>共 1,189 章</span></div>
+      </div>
+    </div></div>
+    <button class="wgo" id="cgo">读这一章 · ${x.book} ${x.c} ›</button>
+    <a class="wgo" id="goChapPage" href="章页.html?b=${x.b + 1}&c=${x.c}&cno=${x.no}"
+       style="display:block;text-align:center;text-decoration:none;line-height:1.5">去章页读 · 底部点「已学习」›</a>
+    <div class="dhint">轻点卡片翻转 · 点空白处关闭</div>`;
+
+  mask.classList.add('on'); detail.classList.add('on');
+  fitFace(detail.querySelector('.face.front')); fitFace(detail.querySelector('.face.back'));
+  attachLinks(CUR_ID);
+  document.getElementById('flip').onclick = ()=>document.getElementById('flip').classList.toggle('flipped');
+  document.getElementById('cgo').onclick = (ev)=>{ ev.stopPropagation();
+    location.href = '章页.html?b=' + (x.b+1) + '&c=' + x.c + '&v=1&cno=' + x.no; };
+}
+
+/* ═══ 词卡详情（正反两面 + 进经页）═══ */
+async function openWord(no){
+  if(window.XJ && !XJ.isUnlocked('w', no)){ XJ.lockToast('w', no); return; }
+  CUR_ID = 'w:' + no;
+  const w = WORDS.find(x=>x.no===no); if(!w) return;
+  markViewed('W' + w.no);
+  paintWord(w);                                  // 先用索引数据立刻画出（按钮马上可见）
+  if(w.def) return;                              // 已审卡/已载入过 → 直接完事
+  try{
+    const sh = await fetch('data/words/w' + (w.b || Math.ceil(w.no/100)) + '.json').then(r=>r.json());
+    const full = sh.find(x=>x.no===no);
+    if(full){
+      Object.assign(w, full);
+      if(CUR_ID === 'w:' + no) paintWord(w);     // 数据到位后重画同一张
+    }
+  }catch(e){ console.warn('词卡详情载入失败', e); }
+}
+
+function paintWord(w){
+  if(!w.senses) w.senses = [];
+  if(!w.co) w.co = [];
+  if(!w.top){
+    const ents = Object.entries(w.books || {}).sort((a,b)=>b[1]-a[1]).slice(0,2);
+    w.top = ents.length ? ents : [["—", 0]];
+    w.rest = [Math.max(0, Object.keys(w.books||{}).length - w.top.length),
+              Object.values(w.books||{}).slice(2).reduce((a,b)=>a+b, 0)];
+  }
+  const peak = (w.top[0] && w.top[0][1]) ? w.top[0][1] : 1;
+  const volRows = w.top.map(([n,v])=>`<div class="drow"><span class="dl">${n}</span>
+      <span class="dt"><i style="width:${Math.round(v/peak*100)}%"></i></span>
+      <span class="dn">${v}</span></div>`).join('');
+  const senses = w.senses.map(([k,name,ref])=>`<div class="wsen"><span class="k">${k}</span>
+      <span class="nm">${name}</span><span class="rf">${ref}</span></div>`).join('');
+  const co = w.co.map(([t,n])=>`<span class="w">${t}<b>${n}</b></span>`).join('');
+  const loading = !w.def;
+
+  detail.innerHTML = `
+    <div class="flip" id="flip"><div class="inner">
+      <div class="face front wfront">
+        <div class="corner"></div><div class="idx">词卡 W${w.no}</div>
+        <div class="wpy">${w.py || ''}</div>
+        <div class="wword">${w.w}</div>
+        <div class="wpos"><span>${w.pos ? w.pos + ' · ' : ''}旧约 ${w.ot || 0} 次 · 新约 ${w.nt || 0} 次</span></div>
+        <div class="stats"><span><b>${w.freq}</b>次</span><span><b>${w.vols}</b>卷</span><span><b>${w.chaps}</b>章</span></div>
+        <div class="words">${co}</div>
+        ${w.verse ? `<div class="vs"><div class="q">${w.verse}</div><div class="r">${w.ref} · 首见 ${w.first}</div></div>` : ''}
+      </div>
+      <div class="face back wback">
+        <div class="corner"></div><div class="idx">词卡 W${w.no} · 释义</div>
+        <div class="bh"><span class="c">${w.w}</span><span class="p">${w.py || ''} · ${w.freq} 次</span>
+          <span class="p" style="margin-left:auto">W${w.no}</span></div>
+        <div class="def">${w.def || '释义载入中…'}</div>
+        <div class="senses">${senses}</div>
+        <div class="dist">
+          <div class="dhd">出现卷分布 · ${w.vols} 卷 · 共 ${w.freq} 次</div>
+          ${volRows}
+          ${w.rest && w.rest[0] ? `<div class="drest">其余 ${w.rest[0]} 卷 · ${w.rest[1]} 次</div>` : ''}
+        </div>
+        ${w.bverse ? `<div class="bvs"><div class="q">${w.bverse}</div><div class="r">${w.bref}</div></div>` : ''}
+      </div>
+    </div></div>
+    <button class="wgo" id="wgo">查看全部 ${w.verses} 节经文 ›</button>
+    ${xjLearnHTML('w', w.no, {w:w.w})}
+    <div class="dhint">轻点卡片翻转 · 点空白处关闭</div>`;
+
+  mask.classList.add('on'); detail.classList.add('on');
+  fitFace(detail.querySelector('.face.front')); fitFace(detail.querySelector('.face.back'));
+  attachLinks(CUR_ID);
+  if(!loading) render();
+  document.getElementById('flip').onclick = ()=>document.getElementById('flip').classList.toggle('flipped');
+  const wgo = document.getElementById('wgo');
+  if(wgo) wgo.onclick = (e)=>{ e.stopPropagation(); location.href = '经页.html?w=' + w.no; };
+}
+
+/* ═══ 卡片详情（可翻转）═══ */
+const mask=document.getElementById('mask'), detail=document.getElementById('detail');
+
+/* ── 卡面自适应：超界依次缩经文/释义字号、行高，最后收紧间距 ── */
+function fitFace(face){
+  if (!face) return;
+  const over = () => face.scrollHeight - face.clientHeight;
+  if (over() <= 1) return;
+  const q = face.querySelector('.vs .q') || face.querySelector('.bvs .q');
+  if (q && over() > 1){
+    let fs = parseFloat(getComputedStyle(q).fontSize);
+    let lh = parseFloat(getComputedStyle(q).lineHeight) / fs;
+    let guard = 0;
+    while (over() > 1 && fs > 9.2 && guard++ < 20){
+      fs -= 0.3; lh = Math.max(1.52, lh - 0.05);
+      q.style.fontSize = fs.toFixed(2) + 'px';
+      q.style.lineHeight = lh.toFixed(2);
+    }
+  }
+  if (over() > 1){
+    const def = face.querySelector('.def');
+    if (def){
+      let fs = parseFloat(getComputedStyle(def).fontSize), guard = 0;
+      while (over() > 1 && fs > 9.4 && guard++ < 16){
+        fs -= 0.25; def.style.fontSize = fs.toFixed(2) + 'px';
+      }
+    }
+  }
+  if (over() > 1){
+    const kvs = face.querySelectorAll('.chkv');
+    if (kvs.length){
+      face.classList.add('chTight');
+      let fs = parseFloat(getComputedStyle(kvs[0].querySelector('.t') || kvs[0]).fontSize), guard = 0;
+      while (over() > 1 && fs > 9.0 && guard++ < 22){
+        fs -= 0.2;
+        kvs.forEach(e => { const t = e.querySelector('.t'); if (t) t.style.fontSize = fs.toFixed(2) + 'px'; });
+      }
+    }
+  }
+  if (over() > 1) face.classList.add('tight');
+}
+
+async function openCard(no){
+  if(window.XJ && !XJ.isUnlocked('z', no)){ XJ.lockToast('z', no); return; }
+  CUR_ID = 'z:' + String(no).padStart(4,'0');
+  const c=CARDS.find(x=>x.no===no);
+  if(c && !WC){                                  // 计数表没到就先等它，别让按钮时有时无
+    try{ WC = await (await fetch('data/char_wordcount.json')).json(); }catch(e){}
+  }
+  if(c){ markViewed(c.no); }            // 点进卡片 → 记「浏览」
+  const ent = Object.entries(c.books).sort((a,b)=>b[1]-a[1]);
+  const top = ent.slice(0,4), restN = ent.slice(4).reduce((a,x)=>a+x[1],0),
+        restV = ent.length - Math.min(4, ent.length);
+  const peak = top.length ? top[0][1] : 1;
+  // 正面：出现卷分布
+  const volRows = top.map(([n,v])=>`<div class="drow"><span class="dl">${n}</span>
+      <span class="dt"><i style="width:${Math.max(4,Math.round(v/peak*100))}%"></i></span>
+      <span class="dn">${v}</span></div>`).join('');
+  // 背面：相关词分布
+  const wBars = c.bars.map(([l,n])=>`<div class="drow"><span class="dl">${l}</span>
+      <span class="dt"><i style="width:${Math.max(4,Math.round(n/c.bars[0][1]*100))}%"></i></span>
+      <span class="dn">${n}</span></div>`).join('');
+
+  detail.innerHTML = `
+    <div class="flip" id="flip"><div class="inner">
+      <div class="face front">
+        <div class="corner"></div><div class="idx">字卡 №${String(c.no).padStart(4,'0')}</div>
+        <div class="charbox"><div class="bigc">${c.ch}</div><div class="pyr">${c.py}</div></div>
+        <div class="stats"><span><b>${c.freq}</b>次</span><span><b>${c.vols}</b>卷</span><span><b>${c.chaps}</b>章</span></div>
+        <div class="dist">
+          <div class="dhd">出现卷分布 · ${cardVols(c)} 卷 · 共 ${c.freq} 次</div>
+          ${volRows}
+          ${ent.length > top.length ? `<div class="drest">其余 ${ent.length-top.length} 卷 · ${restN} 次</div>` : ''}
+        </div>
+        <div class="vs"><div class="q">${c.verse}</div><div class="r">${c.ref}${c.first && c.first !== c.ref ? ' · 首见 ' + c.first : ''}</div></div>
+      </div>
+      <div class="face back">
+        <div class="corner"></div><div class="idx">字卡 №${String(c.no).padStart(4,'0')} · 释义</div>
+        <div class="bh"><span class="c">${c.ch}</span><span class="p">${c.py} · ${c.freq} 次</span>
+          <span class="p" style="margin-left:auto">№${String(c.no).padStart(4,'0')}</span></div>
+        <div class="def">${c.def}</div>
+        <div class="dist">
+          <div class="dhd">相关词分布 · 前四</div>
+          ${wBars}
+        </div>
+        <div class="ordnote" style="margin-top:10px">全书 3,028 字中第 ${c.no} 个出现 · 编号按首见顺序</div>
+        <div class="bvs"><div class="q">${c.bverse}</div><div class="r">${c.bref}${c.bctx ? ' · 上文' : ''}</div></div>
+      </div>
+    </div></div>
+    ${(WC && WC[c.ch]) ? `<button class="wgo" id="cwo">查看全部 ${WC[c.ch]} 条相关词 ›</button>` : ''}
+    ${xjLearnHTML('z', c.no, {z:c.ch})}
+    <div class="dhint">轻点卡片翻转 · 点空白处关闭</div>`;
+  mask.classList.add('on'); detail.classList.add('on');
+  fitFace(detail.querySelector('.face.front')); fitFace(detail.querySelector('.face.back'));
+  attachLinks(CUR_ID);
+  render();                              // 刷新态计数与标签
+  document.getElementById('flip').onclick=()=>document.getElementById('flip').classList.toggle('flipped');
+  const cwo = document.getElementById('cwo');
+  if(cwo) cwo.onclick = (e)=>{
+    e.stopPropagation();
+    location.href = '经库.html?card=word&q=' + encodeURIComponent(c.ch);
+  };
+}
+
+
+let CUR_ID = '';
+let WC = null;                                  // 字 → 含该字的词条数
+fetch('data/char_wordcount.json').then(r=>r.json()).then(o=>{ WC = o; }).catch(()=>{});
+
+
+function titleOfId(id){
+  const t = id.split(':')[0], e = IDX[t] && IDX[t][id];
+  if(e) return e.title;
+  if(t === 'v'){
+    const no = +id.split(':')[1], e2 = VERSES.find(x => x.no === no);
+    if(e2) return abbrOf(e2.b) + ' ' + e2.c + ':' + e2.v;
+  }
+  return id;
+}
+function chapCardOf(b, c){
+  if(!IDX) return null;
+  return Object.values(IDX.cp).find(x => (x.chapters||[]).some(p => p[0]===b && p[1]===c)) || null;
+}
+/* 关联卡：优先用 index 里算好的链接；节卡与字/词卡再按章节归属兜底 */
+function linksFor(id, vtext){
+  const out = [], seen = {};
+  const push = (x)=>{ if(x && !seen[x.id]){ seen[x.id]=1; out.push(x); } };
+  if(!IDX) return out;
+  const t = id.split(':')[0], no = +id.split(':')[1];
+
+  if(t === 'cp' || t === 'z'){
+    const e = IDX[t] && IDX[t][id];
+    if(e) (e.links||[]).forEach(x => push({ id:x, title:titleOfId(x) }));
+    return out;
+  }
+
+  if(t === 'w'){                      // 词卡：含该字的字卡 + 首现那一章
+    const w = WORDS.find(x => x.no === no);
+    if(w){
+      (w.w || '').split('').forEach(ch => {
+        const z = CARDS.find(c => c.ch === ch);
+        if(z) push({ id:'z:'+String(z.no).padStart(4,'0'), title:ch });
+      });
+      const m = (w.first || '').match(/^(\S+) (\d+):(\d+)$/);
+      if(m){
+        const bi = BOOKS.findIndex(B => B.n === m[1]);
+        if(bi >= 0){ const c = chapCardOf(bi, +m[2]); if(c) push({ id:c.id, title:c.title }); }
+      }
+    }
+    return out;
+  }
+
+  if(t === 'v'){                      // 节卡：所在章卡 + 正文里出现的字/词卡
+    const v = VERSES.find(x => x.no === no);
+    if(v){
+      const cp = chapCardOf(v.b, v.c);
+      push(cp && { id: cp.id, title: cp.title });
+      const T = vtext || '';
+      if(T){
+        CARDS.forEach(c => { if(T.indexOf(c.ch) >= 0) push({ id:'z:'+String(c.no).padStart(4,'0'), title:c.ch }); });
+        WORDS.forEach(w => { if(w.w.length > 1 && T.indexOf(w.w) >= 0) push({ id:'w:'+w.no, title:w.w }); });
+      }
+    }
+  }
+  return out;
+}
+
+function gotoId(id){
+  if(!IDX) return;
+  const t = id.split(':')[0], e = IDX[t] && IDX[t][id];
+  if(!e) return;
+  closeDetail();
+  if(t==='z') openCard(e.no);
+  else if(t==='w') openWord(e.no);
+  else if(t==='v') openVerse(e.no);
+  else if(t==='cp') openChap(e.no);
+}
+/* 关联卡只显示前 2 个，保持底部单行高度不变（卡面 398/398 不动） */
+function attachLinks(id, vtext){
+  return;                                   // 用户判定「链接到的卡没有意义」，已停用
+
+  const t0 = id.split(':')[0];
+  if(t0 === 'v' || t0 === 'cp') return;      // 节卡/章卡背面已有「连到的卡」，不再浮动重复
+  const hint = detail.querySelector('.dhint');
+  if(!hint) return;
+  const links = linksFor(id, vtext);
+  if(!links.length) return;
+  const chips = links.slice(0,3).map(x=>
+    `<span class="lkchip" data-id="${x.id}">${x.title}</span>`).join('');
+  document.querySelectorAll('.lkrow').forEach(n=>n.remove());
+  hint.insertAdjacentHTML('beforebegin',
+    `<div class="lkrow"><span class="lkw">连到</span>${chips}</div>`);
+  document.querySelectorAll('.lkrow .lkchip').forEach(c=>{
+    c.onclick = function(ev){ ev.stopPropagation(); gotoId(this.dataset.id); };
+  });
+}
+
+function closeDetail(){ mask.classList.remove('on'); detail.classList.remove('on'); }
+mask.onclick = closeDetail;
+detail.addEventListener('click', e=>{ if(e.target === detail) closeDetail(); });  // 浮层自身也吃点击，需单独处理
+
+/* 章节面板 */
+const sheet=document.createElement('div'); sheet.className='sheet'; document.querySelector('.phone').appendChild(sheet);
+const st=document.createElement('style'); st.textContent=`
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--paper2);border-radius:20px 20px 0 0;padding:18px 20px 24px;
+  transform:translateY(112%);transition:transform .26s ease;z-index:12;max-height:78%;overflow-y:auto}
+.sheet.on{transform:translateY(0)}
+.sheet h4{font-family:var(--serif);font-size:15px;letter-spacing:2px;font-weight:600;margin-bottom:3px}
+.sheet .sub{font-size:10.5px;color:var(--ink3);margin-bottom:14px;letter-spacing:.6px}
+.cgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.cnum{background:var(--paper);border:1px solid var(--line);border-radius:9px;text-align:center;padding:9px 0;
+  font-size:12.5px;color:var(--ink2);cursor:pointer;font-variant-numeric:tabular-nums}
+.cnum:active{background:#EFE7D7}`;
+document.head.appendChild(st);
+function openBook(i){
+  const b=BOOKS[i];
+  sheet.innerHTML=`<h4>${b.n}</h4><div class="sub">${b.t} · ${b.g} · 共 ${b.c} 章</div>
+    <div class="cgrid">${Array.from({length:b.c},(_,k)=>`<div class="cnum" data-c="${k+1}">${k+1}</div>`).join('')}</div>`;
+  mask.classList.add('on'); sheet.classList.add('on');
+  sheet.querySelectorAll('.cnum').forEach(n=>n.onclick=()=>{sheet.classList.remove('on');mask.classList.remove('on');
+    toast(`${b.n} 第 ${n.dataset.c} 章 · 阅读页下一步做`);});
+}
+let tt;
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');
+  clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),1600);}
+
+/* 横滑条拖拽 */
+function enableDragScroll(strip){
+  let s0 = null, moved = false;
+  strip.addEventListener('pointerdown', e=>{
+    if(e.pointerType === 'touch') return;
+    s0 = {x:e.clientX, left:strip.scrollLeft, id:e.pointerId};   // 先不捕获，保证 plain click 能落到 chip
+    moved = false;
+  });
+  strip.addEventListener('pointermove', e=>{
+    if(!s0) return;
+    const dx = e.clientX - s0.x;
+    if(!moved && Math.abs(dx) > 6){          // 真的开始拖了，才捕获指针
+      moved = true;
+      strip.classList.add('grabbing');
+      try{ strip.setPointerCapture(s0.id); }catch(_){}
+    }
+    if(moved) strip.scrollLeft = s0.left - dx;
+  });
+  const end = ()=>{
+    if(!s0) return;
+    s0 = null; strip.classList.remove('grabbing');
+    if(moved) setTimeout(()=>{ moved = false; }, 0);   // 让紧随的 click 被下面的捕获器吃掉
+  };
+  ['pointerup','pointercancel','pointerleave'].forEach(ev=>strip.addEventListener(ev, end));
+  strip.addEventListener('click', e=>{
+    if(moved){ e.preventDefault(); e.stopPropagation(); moved = false; }
+  }, true);
+  strip.addEventListener('wheel', e=>{
+    if(Math.abs(e.deltaY) > Math.abs(e.deltaX)){ strip.scrollLeft += e.deltaY; e.preventDefault(); }
+  }, {passive:false});
+}
+
+qEl.addEventListener('input', ()=>{
+  Q = qEl.value;
+  document.getElementById('srch').classList.toggle('has', !!Q);
+  render();
+});
+document.getElementById('qclr').onclick = ()=>{
+  qEl.value = ''; Q = '';
+  document.getElementById('srch').classList.remove('has');
+  render(); qEl.focus();
+};
+
+/* ── 态 = 真实行为统计 ──
+   遇见：在首页被「见」定格过（xj_seen）
+   浏览：被点开看过正反面（xj_viewed）
+   喜欢：点过爱心（xj_like）
+   复习 / 掌握：暂未定义，保持 0                                       */
+let SEEN = {}, VIEWED = {}, LIKED = {};
+try{
+  SEEN   = JSON.parse(localStorage.getItem('xj_seen')   || '{}');
+  VIEWED = JSON.parse(localStorage.getItem('xj_viewed') || '{}');
+  LIKED  = JSON.parse(localStorage.getItem('xj_like')   || '{}');
+  // 清掉旧版本写在卡片数据里的演示态
+  CARDS.forEach(c=>{ c.state = ''; });
+}catch(e){}
+function statesOf(c){
+  const out = [];
+  if(SEEN[c.no])   out.push('遇见');
+  if(VIEWED[c.no]) out.push('浏览');
+  if(LIKED[c.no])  out.push('喜欢');
+  { if(window.XJ && XJ.isFrozen && XJ.isFrozen('z', c.no) && out.indexOf('遇见') < 0) out.push('遇见');
+  const KIND = 'z', NO = c.no;  /* 学习态：未学＝已解锁未学完；已学＝学完；复习＝到期；掌握＝复习过 2 次以上 */
+  if(window.XJ){
+    const un = XJ.isUnlocked(KIND, NO), le = XJ.isLearned(KIND, NO);
+    if(un && !le) out.push('未学');
+    if(le){
+      out.push('已学');
+      const info = XJ.learnInfo ? XJ.learnInfo(KIND, NO) : null;
+      if(info){
+        if(info.due && info.due <= Date.now()) out.push('复习');
+        if((info.reps || 0) >= 2) out.push('掌握');
+      }
+    }
+  }
+  }
+  return out;
+}
+function primaryState(c){
+  const a = statesOf(c);
+  return a.indexOf('喜欢') >= 0 ? '喜欢' : (a.indexOf('浏览') >= 0 ? '浏览' : (a.indexOf('遇见') >= 0 ? '遇见' : ''));
+}
+function wordStates(w){
+  const k = 'W' + w.no, out = [];
+  if(SEEN[k])   out.push('遇见');
+  if(VIEWED[k]) out.push('浏览');
+  if(LIKED[k])  out.push('喜欢');
+  { if(window.XJ && XJ.isFrozen && XJ.isFrozen('w', w.no) && out.indexOf('遇见') < 0) out.push('遇见');
+  const KIND = 'w', NO = w.no;  /* 学习态：未学＝已解锁未学完；已学＝学完；复习＝到期；掌握＝复习过 2 次以上 */
+  if(window.XJ){
+    const un = XJ.isUnlocked(KIND, NO), le = XJ.isLearned(KIND, NO);
+    if(un && !le) out.push('未学');
+    if(le){
+      out.push('已学');
+      const info = XJ.learnInfo ? XJ.learnInfo(KIND, NO) : null;
+      if(info){
+        if(info.due && info.due <= Date.now()) out.push('复习');
+        if((info.reps || 0) >= 2) out.push('掌握');
+      }
+    }
+  }
+  }
+  return out;
+}
+function wordPrimary(w){
+  const a = wordStates(w);
+  return a.indexOf('喜欢') >= 0 ? '喜欢' : (a.indexOf('浏览') >= 0 ? '浏览' : (a.indexOf('遇见') >= 0 ? '遇见' : ''));
+}
+function markViewed(no){
+  try{ VIEWED[no] = Date.now();
+    localStorage.setItem('xj_viewed', JSON.stringify(VIEWED)); }catch(e){}
+}
+
+const BOOT = loadCards()
+  .then(function(){ render(); })
+  .catch(function(e){ console.warn('cards.json 载入失败', e); render(); });
+
+
+
+/* 首屏出图后，空闲时补拉词卡/节卡/章卡（不阻塞首屏） */
+setTimeout(function(){
+  loadRest().then(function(ok){ if(ok) render(); });
+}, 260);
+/* ── 从首页跳进来：直接打开指定字卡（?no=0320）── */
+(async function(){
+  await BOOT;
+  const q = new URLSearchParams(location.search);
+  /* 圣殿「痕迹」五格跳转：?state=未学&view=all */
+  const _st = q.get('state');
+  if(_st !== null){
+    S.state = _st || null;
+    if(q.get('view') === 'all') S.card = null;
+    setTimeout(function(){ try { render(); } catch(e){} }, 60);
+  }
+  const kw = q.get('q');
+  if(kw !== null){ Q = kw; qEl.value = kw;
+    document.getElementById('srch').classList.toggle('has', !!kw);
+    render();
+    if(!kw) setTimeout(()=>qEl.focus(), 120);
+  }
+  const cardType = q.get('card');
+  if(cardType === 'verse'){
+    const vno = parseInt(q.get('vno') || '0', 10) || VERSES[0].no;
+    S.card = '节卡'; S.test = null; S.genre = null; S.bookIdx = null; S.state = null;
+    render();
+    setTimeout(()=>openVerse(vno), 80);
+    return;
+  }
+  if(cardType === 'chap'){
+    const cno = parseInt(q.get('cno') || '0', 10) || CHAPTERS[0].no;
+    S.card = '章卡'; S.test = null; S.genre = null; S.bookIdx = null; S.state = null;
+    render();
+    setTimeout(()=>openChap(cno), 80);
+    return;
+  }
+  if(cardType === 'word'){
+    S.card = '词卡'; render();
+    const wno = parseInt(q.get('wno') || '0', 10);
+    if(wno) setTimeout(()=>openWord(wno), 80);
+    return;
+  }
+  const target = q.get('no');
+  if(!target) return;
+  S.card = '字卡'; S.test = null; S.genre = null; S.bookIdx = null; S.state = null;
+  render();
+  const c = CARDS.find(x=>String(x.no) === String(target).replace(/^0+/,''));
+  if(c) setTimeout(()=>openCard(c.no), 80);
+})();
+</script>
+
+<script>
+/* 顶部音乐标志 ↔ 播放状态（壳里由 shell 广播；单独打开时读本地记录） */
+(function(){
+  var el = document.getElementById('music'); if (!el) return;
+  function paint(playing, p){
+    el.classList.toggle('playing', !!playing);
+    el.style.setProperty('--p', Math.min(100, Math.max(0, (p||0) * 100)) + '%');
+  }
+  window.goMusic = function(){
+    if (window.parent !== window) parent.postMessage({ __xj:'music-goto' }, '*');
+    else location.href = '乐库.html?resume=1';
+  };
+  el.addEventListener('click', function(e){ e.preventDefault(); window.goMusic(); });
+  window.addEventListener('message', function(e){
+    var d = e.data; if (!d || (d.__xj !== 'state' && d.__xj !== 'music-state')) return;
+    var dur = d.dur || 0;
+    paint(!d.paused, dur > 0 ? (d.cur || 0) / dur : 0);
+  });
+  if (window.parent !== window) parent.postMessage({ __xj:'music-ask' }, '*');
+  else {
+    try {
+      var last = JSON.parse(localStorage.getItem('xj_music_last') || 'null');
+      if (last && last.name) paint(false, last.dur ? (last.t || 0) / last.dur : 0);
+    } catch(err){}
+  }
+})();
+</script>
+
+<style>html.embed .tabbar{display:none!important}</style>
+<script>if(window.name==="xj-embed"||/[?&]embed=1/.test(location.search))document.documentElement.classList.add("embed");</script>
+
+<script>
+/* 底栏四页跳转（上线版） */
+(function(){
+  var TABS = ["index.html","经库.html","乐库.html","我的.html"];
+  document.querySelectorAll('.tabbar .tab').forEach(function(t,i){
+    t.style.cursor='pointer';
+    t.addEventListener('click', function(){
+      if(t.classList.contains('on')) return;
+      location.href = TABS[i];
+    });
+  });
+})();
+</script>
+<script src="music-mini.js"></script>
+<script id="tab-class">(function(){function set(){var w=window.innerWidth,h=window.innerHeight;var r=document.documentElement;r.classList.toggle("tab-wide",w>=560);r.classList.toggle("tab-tall",w>=560&&h>=900);}set();window.addEventListener("resize",set);window.addEventListener("orientationchange",function(){setTimeout(set,120);});})();</script>
+
+<script id="xj-locks">
+/* ── 迦南渐锁：只锁未解锁的卡；已解锁正常显示 ── */
+(function(){
+  const J = window.XJ; if(!J) return;
+  const KIND = sel => sel.hasAttribute('data-wno') ? ['w', +sel.dataset.wno]
+                    : sel.hasAttribute('data-vno') ? ['v', +sel.dataset.vno]
+                    : sel.hasAttribute('data-cno') ? ['cp', +sel.dataset.cno]
+                    : sel.hasAttribute('data-no')  ? ['z', +sel.dataset.no]  : null;
+
+  /* 已解锁在前、未解锁在后（两组内部保持原顺序） */
+  window.xjUF = function(arr, kind){
+    const J = window.XJ; if(!J || !arr || !arr.length) return arr;
+    const un = [], lk = [];
+    arr.forEach(x => (J.isUnlocked(kind, x.no) ? un : lk).push(x));
+    return un.concat(lk);
+  };
+
+  function applyLocks(){
+    const list = document.getElementById('list'); if(!list) return;
+    let total = 0, locked = 0;
+    list.querySelectorAll('.crow').forEach(row=>{
+      const k = KIND(row); if(!k) return;
+      total++;
+      const ok = J.isUnlocked(k[0], k[1]);
+      if(!ok){ locked++; if(!row.classList.contains('locked')){
+        row.classList.add('locked');
+        row.innerHTML = `<div class="cc lkcc" style="color:#8A6A3B">` +
+          `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">` +
+          `<rect x="5" y="10.5" width="14" height="9.5" rx="2"/><path d="M8.5 10.5V7.8a3.5 3.5 0 0 1 7 0v2.7"/></svg></div>` +
+          `<div class="cm"><div class="cn">未解锁</div>` +
+          `<div class="cb">先学完当前进度，这张卡会自动出现</div></div>`;
+        row.style.opacity = '.55';
+      }} else {
+        row.classList.remove('locked');
+        row.style.opacity = '';
+        const learned = J.isLearned(k[0], k[1]);
+        const mark = row.querySelector('.lrb');
+        if(learned && !mark){
+          const m = document.createElement('div');
+          m.className = 'lrb'; m.textContent = '✓';
+          row.appendChild(m);
+        } else if(!learned && mark) mark.remove();
+      }
+    });
+    // 已解锁置顶，未解锁排在下方（两组内部保持原顺序）
+    const rowsArr = [...list.querySelectorAll('.crow')];
+    if(rowsArr.length){
+      const un = rowsArr.filter(r => !r.classList.contains('locked'));
+      const lk = rowsArr.filter(r => r.classList.contains('locked'));
+      const ordered = un.concat(lk);
+      let changed = false;
+      for(let i = 0; i < ordered.length; i++){
+        if(rowsArr[i] !== ordered[i]){ changed = true; break; }
+      }
+      if(changed){
+        const sentinel = list.querySelector('#sentinel');
+        ordered.forEach(r => list.appendChild(r));
+        if(sentinel) list.appendChild(sentinel);
+      }
+    }
+
+    const h = document.getElementById('hcount');
+    if(h && total){
+      const first = list.querySelector('.crow');
+      const k = first ? KIND(first) : null;
+      const NAME = {z:'字卡', w:'词卡', v:'节卡', cp:'章卡'};
+      const TOT = {z: CARDS.length, w: WORDS.length, v: VERSES.length, cp: CHAPTERS.length};
+      if(k) h.textContent = NAME[k[0]] + ' 已解锁 ' + J.countKind(k[0]) + ' / ' + TOT[k[0]].toLocaleString();
+    }
+    if(location.search.indexOf('q=') >= 0 && total && locked === total && !window._xjSearched){
+      window._xjSearched = true;
+      const b = J.book();
+      J.toast('该内容尚未解锁 · 当前进度：' + (b ? b.book + ' ' + J.p.cursor.chap + '/' + b.chaps + ' 章' : '创世记 1 章'));
+    }
+  }
+
+  // 拦截未解锁项的点击
+  document.addEventListener('click', function(e){
+    const row = e.target.closest && e.target.closest('.crow.locked');
+    if(row){ e.preventDefault(); e.stopPropagation(); J.lockToast(); }
+  }, true);
+
+  J.init().then(()=>{
+    try { J.ensureBook && J.ensureBook(); } catch(e){}
+    try { render(); } catch(e){}          /* 学习状态到位后重绘一次（态计数依赖 XJ） */
+    /* 节卡 → 所属卷/章（供 P1 分批与章卡解锁使用） */
+    try {
+      J.setVerseInfo((b0, c, v) => {
+        const e = VERSES.find(x => x.b === b0 && x.c === c && x.v === v);
+        return e ? { b: e.b + 1, c: e.c, no: e.no, v: e.v } : null;
+      });
+    } catch(e){}
+    applyLocks();
+    const list = document.getElementById('list');
+    if(list) new MutationObserver(()=>applyLocks()).observe(list, {childList:true});
+    setInterval(applyLocks, 1200);
+    setTimeout(function(){ try { render(); } catch(e){} }, 1200);
+  }).catch(()=>{});
+})();
+</script>
+
+<style id="xj-learn-css">
+.xjL{display:block;margin:12px auto 0;padding:11px 26px;border:none;border-radius:999px;
+  background:var(--brass);color:#FBF8F1;font-family:var(--sans);font-size:13px;letter-spacing:2px;
+  box-shadow:0 6px 16px rgba(138,106,59,.26);cursor:pointer}
+.xjL:active{transform:scale(.97)}
+.lrb{flex:0 0 auto;color:var(--brass);font-size:11px;opacity:.85;margin-left:2px}
+.xjL.done{background:transparent;color:var(--brass);border:1px solid var(--brass);box-shadow:none}
+#detail .dhint{display:none}      /* 有了「已学习」按钮，底部提示语省略，避免与按钮重叠 */
+</style>
+<script>
+window.xjLearnHTML = function(kind, no, extra){
+  const J = window.XJ; if(!J) return '';
+  const done = J.isLearned(kind, no);
+  const ch = (extra && (extra.z || extra.w)) || '';
+  return `<button class="xjL${done ? ' done' : ''}" data-k="${kind}" data-no="${no}" data-ch="${ch}">`
+       + (done ? '已学习 ✓' : '已学习') + '</button>';
+};
+document.addEventListener('click', async function(e){
+  const b = e.target.closest && e.target.closest('.xjL');
+  if(!b) return;
+  e.preventDefault(); e.stopPropagation();
+  const J = window.XJ; if(!J) return;
+  if(b.classList.contains('done')) return;
+  const kind = b.dataset.k, no = +b.dataset.no, ch = b.dataset.ch || '';
+  const cvv = window.__curVerse || {};
+  const LABEL = {
+    z:  ch ? ('字 · ' + ch) : '',
+    w:  ch ? ('词 · ' + ch) : '',
+    v:  (cvv.c ? (abbrOf(cvv.b0) + ' ' + cvv.c + ':' + cvv.v) : ''),
+    cp: (window.__curChap ? (window.__curChap.book + ' ' + window.__curChap.c + ' 章') : '')
+  };
+  const r = J.learn(kind, no, ch, LABEL[kind] || '');
+  b.classList.add('done'); b.textContent = '已学习 ✓';
+
+  /* 每次点「已学习」都给反馈：普通=双音，章卡=三音，晋升=五声 */
+  if(window.XJfx){
+    const fx = r.levelUp ? 'level' : (kind === 'cp' ? 'chapter' : 'unlock');
+    XJfx.chime(fx);
+    XJfx.burst(document.getElementById('flip'), fx);
+  }
+  if(r.levelUp) J.levelOverlay(r.levelUp);
+  if(r.words && r.words.length){
+    J.toast('已学习 · 解锁 ' + r.words.length + ' 张词卡');
+  }
+  else if(kind === 'cp'){
+    const vol = await J.afterChapter(no);          // 先判卷，再推进（分卷后不能反序）
+    J.nextChapter();
+    if(vol && vol.volume){
+      J.toast('「' + vol.bookName + '」整卷完成 · +5 抽卡');
+      for(const c of (vol.rewards || [])) { await J.figureOverlay(c); await new Promise(r => setTimeout(r, 1600)); }
+    } else if(vol){
+      J.toast('本章完成 · +2 抽卡 · 已进入第 ' + J.p.cursor.chap + ' 章（' + vol.chapterDone + '/' + vol.chapterTotal + ' 章）');
+    }
+  }
+  else J.toast('已学习');
+
+  /* 词卡学完 → 解锁含该词的节卡 */
+  if(kind === 'w'){
+    const v = await J.wordUnlockVerse(no);
+    if(v){
+      const t = (v.b && v.c) ? (' · ' + abbrOf(v.b - 1) + ' ' + v.c) : '';
+      J.toast('已学习 · 解锁 1 张节卡' + t);
+      if(window.XJfx) XJfx.chime('unlock');
+      /* 在按钮下方给一个「去看这张节卡」的直达入口，避免用户找不到 */
+      if(!document.getElementById('xjNextStep')){
+        const box = document.createElement('div');
+        box.id = 'xjNextStep';
+        box.style.cssText = 'margin:12px auto 0;text-align:center';
+        box.innerHTML = '<a href="经库.html?card=verse&vno=' + v.vno + '" style="display:inline-block;font-size:11.5px;'
+          + 'letter-spacing:1px;color:#8A6A3B;border-bottom:1px solid #8A6A3B;padding-bottom:2px;text-decoration:none">'
+          + '已解锁节卡' + (v.c ? ' · ' + abbrOf(v.b - 1) + ' ' + v.c + ':' + (v.v || '') : '') + ' · 去看 ›</a>';
+        const btn = b.parentElement === detail ? b : b;
+        (btn.parentElement || detail).appendChild(box);
+      }
+    }
+  }
+  /* 节卡学完 → 本批课学完则解锁本章章卡 */
+  if(kind === 'v'){
+    const cv = window.__curVerse || {};
+    const a = await J.afterVerse(no, cv.b0, cv.c, cv.v);
+    if(a && a.fresh){ J.toast('本批节卡学完 · 解锁本章章卡'); if(window.XJfx) XJfx.chime('chapter'); }
+    else if(a && a.pending) J.toast('本批还剩 ' + a.pending + ' 张节卡');
+  }
+}, true);
+</script>
+</body>
+</html>

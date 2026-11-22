@@ -1,0 +1,69 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>寻见 · 部署自检</title>
+<style>
+:root{--paper:#F7F2E8;--card:#FCF9F2;--ink:#26231E;--ink2:#5D574C;--ink3:#93897A;--line:#E4DBC9;--brass:#8A6A3B;--ok:#3F7A4E;--bad:#A64232}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:"PingFang SC","Microsoft YaHei",sans-serif;padding:22px 18px 40px}
+h1{font-family:"Noto Serif SC",STSong,serif;font-size:19px;letter-spacing:3px}
+.sub{font-size:11.5px;color:var(--ink3);margin:6px 0 16px;line-height:1.7}
+.row{display:flex;align-items:center;gap:10px;padding:11px 13px;background:var(--card);border:1px solid var(--line);
+  border-radius:10px;margin-bottom:8px;font-size:12px}
+.row .k{flex:1;word-break:break-all}
+.row .s{font-weight:600;font-size:11.5px;white-space:nowrap}
+.ok{color:var(--ok)}.bad{color:var(--bad)}
+.row .n{color:var(--ink3);font-size:10.5px;min-width:62px;text-align:right}
+.sum{margin-top:16px;padding:13px;border-radius:10px;background:var(--card);border:1px solid var(--line);font-size:12.5px;line-height:1.9}
+.tip{margin-top:12px;font-size:11px;color:var(--ink3);line-height:1.9}
+code{background:#EFE8DA;padding:1px 5px;border-radius:4px;font-size:11px}
+</style></head><body>
+<h1>寻见 · 部署自检</h1>
+<div class="sub">检查这台设备上的页面与数据是否齐全。全部 ✓ 才说明部署完整。</div>
+<div id="list"></div>
+<div class="sum" id="sum">正在检查…</div>
+<div class="tip">
+占位提示：若 <code>data/wordvs/_map.json</code> 显示 ✗，说明打包时漏了经页数据目录（376 个文件、约 33 MB），
+把 <code>data/wordvs</code> 整个目录补进去即可。
+</div>
+<script>
+const FILES = [
+  ["index.html", "首页"],
+  ["经库.html", "经库"],
+  ["经页.html", "经页"],
+  ["章页.html", "章页"],
+  ["阅读页.html", "阅读页"],
+  ["data/version.json", "版本戳"],
+  ["data/index.json", "卡片基座（631 KB）"],
+  ["data/cards.json", "字卡 3,027 张（3.0 MB）"],
+  ["data/words_index.json", "词卡索引 9,108 张（2.5 MB）"],
+  ["data/verses.json", "节卡索引（396 KB）"],
+  ["data/chapters.json", "章卡 1,189 张（591 KB）"],
+  ["data/words/w1.json", "词卡详情分片"],
+  ["data/wordvs/_map.json", "经页分片索引"],
+  ["data/b01.json", "经文按卷（创世记）"]
+];
+const list = document.getElementById('list');
+let okN = 0;
+(async ()=>{
+  for(const [path, label] of FILES){
+    let state = '✗ 缺失', cls = 'bad', size = '';
+    try{
+      const r = await fetch(path + '?v=' + Date.now(), {cache:'no-store'});
+      if(r.ok){
+        const t = await r.arrayBuffer();
+        state = '✓ 正常'; cls = 'ok'; size = (t.byteLength/1024).toFixed(0) + ' KB';
+        okN++;
+        if(path.endsWith('.json')) JSON.parse(new TextDecoder().decode(t));   // 顺带验 JSON
+      }
+    }catch(e){ state = '✗ 解析失败'; }
+    list.insertAdjacentHTML('beforeend',
+      `<div class="row"><span class="k">${path}<br><span style="color:#93897A;font-size:10.5px">${label}</span></span>
+       <span class="n">${size}</span><span class="s ${cls}">${state}</span></div>`);
+  }
+  const sum = document.getElementById('sum');
+  sum.innerHTML = okN === FILES.length
+    ? `<b class="ok">全部 ${FILES.length} 项正常</b>，部署完整。`
+    : `<b class="bad">${FILES.length - okN} 项缺失</b>（共 ${FILES.length} 项）。缺 <code>data/wordvs</code> 时会出现「打开没有经文」。`;
+})();
+</script><style>html.embed .tabbar{display:none!important}html.embed .status{display:none!important}</style><script>if(window.name==="xj-embed"||/[?&]embed=1/.test(location.search))document.documentElement.classList.add("embed");</script>
+</body></html>

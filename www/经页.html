@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>经页 · 寻见</title>
+<style>
+:root{--paper:#F7F2E8;--paper2:#FCF9F2;--ink:#26231E;--ink2:#5D574C;--ink3:#93897A;
+--line:#E4DBC9;--brass:#8A6A3B;--brass2:#B5924F;
+--serif:"Noto Serif SC","Songti SC",STSong,SimSun,serif;--sans:"PingFang SC","Microsoft YaHei",sans-serif}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{background:var(--paper);font-family:var(--sans);display:flex;justify-content:center}
+.phone{width:100%;max-width:430px;height:100dvh;background:var(--paper);display:flex;flex-direction:column;overflow:hidden}
+.status{height:30px;flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 22px;font-size:11px;color:var(--ink3)}
+.top{flex:0 0 auto;padding:2px 18px 8px;border-bottom:1px solid var(--line)}
+.tline{display:flex;align-items:center;gap:10px}
+.back{width:30px;height:30px;display:flex;align-items:center;justify-content:center;color:var(--brass);font-size:20px;cursor:pointer}
+.wd{font-family:var(--serif);font-size:25px;letter-spacing:4px}
+.wp{font-family:Georgia,serif;font-size:10px;color:var(--brass);letter-spacing:1.5px;margin-top:1px}
+.wno{margin-left:auto;font-size:9.5px;color:var(--ink3);letter-spacing:1.5px}
+.sum{display:flex;gap:11px;margin-top:7px;font-size:10px;color:var(--ink3);letter-spacing:.4px;align-items:baseline;flex-wrap:wrap}
+.sum b{color:var(--ink);font-size:13px;font-weight:600;margin-right:2px;font-variant-numeric:tabular-nums}
+.filters{flex:0 0 auto;display:flex;gap:6px;overflow-x:auto;padding:9px 18px 8px;scrollbar-width:none;
+  cursor:grab;-webkit-overflow-scrolling:touch;
+  mask-image:linear-gradient(90deg,#000 94%,transparent);-webkit-mask-image:linear-gradient(90deg,#000 94%,transparent)}
+.filters::-webkit-scrollbar{display:none}
+.filters.grabbing{cursor:grabbing}
+.fchip{flex:0 0 auto;padding:5px 11px;border:1px solid var(--line);border-radius:999px;background:var(--paper2);
+font-size:11px;color:var(--ink2);white-space:nowrap;cursor:pointer;transition:all .16s}
+.fchip.on{background:var(--brass);border-color:var(--brass);color:#fff}
+.body{flex:1 1 auto;overflow-y:auto;padding:2px 18px 26px}
+.h2{font-family:var(--serif);font-size:13px;letter-spacing:2px;color:var(--ink);margin:14px 0 8px;display:flex;align-items:center;gap:8px}
+.h2:before{content:"";width:14px;height:2px;background:var(--brass);opacity:.6;border-radius:2px}
+.sense{background:var(--paper2);border:1px solid var(--line);border-radius:12px;padding:11px 12px;margin-bottom:9px}
+.sh{font-size:12px;color:var(--ink);letter-spacing:.5px;margin-bottom:5px}
+.sh .k{color:var(--brass);font-family:Georgia,serif;margin-right:5px}
+.sd{font-size:10.5px;color:var(--ink3);line-height:1.85;margin-bottom:7px}
+.sv{padding:7px 0;border-top:1px dashed rgba(228,219,201,.9);cursor:pointer}
+.sv:active{background:#F1E9D9}
+.svr{font-size:9.5px;color:var(--brass);letter-spacing:1.2px;margin-bottom:3px}
+.svt{font-family:var(--serif);font-size:12px;line-height:1.95;color:var(--ink)}
+.grp{margin-bottom:4px}
+.grp h4{font-family:var(--serif);font-size:12px;color:var(--ink);letter-spacing:1.5px;
+  padding:10px 0 6px;border-bottom:1px solid var(--line);display:flex;align-items:baseline}
+.grp h4 i{margin-left:auto;font-style:normal;font-size:9px;color:var(--ink3);letter-spacing:1px}
+.v{display:flex;gap:9px;padding:8px 0;border-bottom:1px solid rgba(228,219,201,.55);cursor:pointer;align-items:flex-start}
+.v:active{background:#F1E9D9}
+.vr{flex:0 0 60px;font-size:9.5px;color:var(--brass);letter-spacing:.8px;padding-top:3px;font-variant-numeric:tabular-nums}
+.vt{flex:1;font-family:var(--serif);font-size:12px;line-height:1.95;color:var(--ink2)}
+.v .go{margin-left:auto;color:#C0B4A0;font-size:12px;padding-top:2px}
+.kw{font-style:normal;color:var(--brass);font-weight:600;background:rgba(181,146,79,.13);border-radius:3px;padding:0 1px}
+.hint{font-size:10px;color:var(--ink3);text-align:center;padding:14px 0 6px;letter-spacing:1px}
+.loading{text-align:center;color:var(--ink3);font-size:12px;padding:40px 0}
+
+.tabbar{flex:0 0 auto;display:flex;border-top:1px solid var(--line);background:rgba(252,249,242,.96);
+  padding:9px 6px calc(9px + env(safe-area-inset-bottom))}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--ink3);
+  position:relative;padding-top:5px;cursor:pointer}
+.tab svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.tab span{font-size:10.5px;letter-spacing:1.4px}
+.tab.on{color:var(--brass)}
+.tab.on span{font-weight:600}
+.tab.on:before{content:"";position:absolute;top:-6px;width:20px;height:2px;border-radius:2px;background:var(--brass)}
+</style>
+<style id="tablet-css">
+/* ── 平板适配（宽度 ≥700px 生效） ── */
+@media (min-width: 560px){
+  .phone{max-width:none!important;width:100%!important;height:100dvh!important;
+         border-radius:0!important;box-shadow:none!important}
+  .status{display:none!important}
+  .tabbar{padding:14px 12px calc(14px + env(safe-area-inset-bottom))}
+  .tab svg{width:24px;height:24px}
+  .tab span{font-size:12px;letter-spacing:2px}
+}
+@media (min-width: 560px) and (max-width: 999px){
+  .phone{border-radius:0!important}
+}
+
+@media (min-width: 560px){ .wrap,.body{max-width:860px;margin:0 auto} #list{max-width:860px;margin:0 auto} }
+
+/* JS 兜底：媒体查询在部分 WebView 不生效时，用 class 兜住平板宽度 */
+html.tab-wide .phone{max-width:none!important;width:100%!important;height:100vh!important;height:100dvh!important}
+html.tab-wide .status{display:none!important}
+</style>
+<style id="hard-css">
+/* 全局防压缩：文字永不逐字换行（部分 WebView 会把容器算窄） */
+html,body{-webkit-text-size-adjust:100%!important;text-size-adjust:100%!important}
+.tab span,.chip,.tagline .tw,.swipe span{white-space:nowrap!important}
+</style>
+<style id="prefs-css">
+/* 夜间 */
+html[data-theme="night"]{--paper:#141210;--paper2:#1C1915;--ink:#EDE6D8;--ink2:#B8AE9D;--ink3:#8B8172;
+  --line:#2E2A23;--brass:#C9A063;--brass2:#E2C089;--brass-soft:rgba(201,160,99,.14)}
+html[data-theme="night"] body{background:#0B0908!important}
+/* 正文字号倍数 */
+html[data-fs="s"]{--fsx:.92} html[data-fs="m"]{--fsx:1}
+html[data-fs="l"]{--fsx:1.1} html[data-fs="xl"]{--fsx:1.2}
+html[data-fs="s"] .zv,html[data-fs="l"] .zv,html[data-fs="xl"] .zv{letter-spacing:.4px}
+html[data-fs="s"] .zvref,html[data-fs="l"] .zvref,html[data-fs="xl"] .zvref{font-size:calc(12.5px*var(--fsx))!important}
+html[data-fs="s"] .zvsub,html[data-fs="l"] .zvsub,html[data-fs="xl"] .zvsub{font-size:calc(9px*var(--fsx))!important}
+html[data-fs="s"] .zfirst,html[data-fs="l"] .zfirst,html[data-fs="xl"] .zfirst{font-size:calc(10px*var(--fsx))!important}
+html[data-fs="s"] .vs .q,html[data-fs="l"] .vs .q,html[data-fs="xl"] .vs .q{font-size:calc(14px*var(--fsx))!important}
+html[data-fs="s"] .bvs .q,html[data-fs="l"] .bvs .q,html[data-fs="xl"] .bvs .q{font-size:calc(13.6px*var(--fsx))!important}
+html[data-fs="s"] .chkv .t,html[data-fs="l"] .chkv .t,html[data-fs="xl"] .chkv .t{font-size:calc(10.8px*var(--fsx))!important}
+html[data-fs="s"] .def,html[data-fs="l"] .def,html[data-fs="xl"] .def{font-size:calc(11.5px*var(--fsx))!important}
+html[data-fs="s"] .ref,html[data-fs="l"] .ref,html[data-fs="xl"] .ref{font-size:calc(11.5px*var(--fsx))!important}
+</style>
+<style id="prefs-css-2">
+html[data-fs="s"] .t,html[data-fs="l"] .t,html[data-fs="xl"] .t{font-size:calc(15px * var(--fsx))!important}
+html[data-fs="s"] .q,html[data-fs="l"] .q,html[data-fs="xl"] .q{font-size:calc(14px * var(--fsx))!important}
+</style>
+</head>
+<script id="xj-prefs-early">
+(function(){try{var p=JSON.parse(localStorage.getItem('xj_prefs')||'{}');
+if(p.theme)document.documentElement.dataset.theme=p.theme;
+if(p.fs)document.documentElement.dataset.fs=p.fs;}catch(e){}})();
+</script>
+<body>
+<div class="phone">
+  <div class="status"><span>9:41</span><span style="width:14px;height:7px;border:1px solid var(--ink3);border-radius:2px;opacity:.7"></span></div>
+  <div class="top">
+    <div class="tline"><div class="back" id="back">‹</div>
+      <div><div class="wd" id="wd">—</div><div class="wp" id="wp">—</div></div>
+      <div class="wno" id="wno">—</div></div>
+    <div class="sum" id="sum"></div>
+  </div>
+  <div class="filters" id="f"></div>
+  <div class="body" id="body"><div class="loading">载入中…</div></div>
+
+  <div class="tabbar" id="tabbar">
+    <div class="tab" data-href="index.html"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="m15.1 8.9-1.8 4.4-4.4 1.8 1.8-4.4z"/></svg><span>寻见</span></div>
+    <div class="tab on" data-href="经库.html"><svg viewBox="0 0 24 24"><path d="M11.2 6.2C9.6 5 7.4 4.4 4.5 4.4v13.2c2.9 0 5.1.6 6.7 1.8 1.6-1.2 3.8-1.8 6.7-1.8V4.4c-2.9 0-5.1.6-6.7 1.8z"/><path d="M11.2 6.2v13.2"/></svg><span>迦南</span></div>
+    <div class="tab" data-href="乐库.html"><svg viewBox="0 0 24 24"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></svg><span>敬拜</span></div>
+    <div class="tab" data-href="我的.html"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c1.2-3.8 3.6-5.4 7-5.4S17.8 16.2 19 20"/></svg><span>圣殿</span></div>
+  </div>
+</div>
+
+<script>
+const BOOK = ["创世记","出埃及记","利未记","民数记","申命记","约书亚记","士师记","路得记","撒母耳记上","撒母耳记下",
+"列王纪上","列王纪下","历代志上","历代志下","以斯拉记","尼希米记","以斯帖记","约伯记","诗篇","箴言",
+"传道书","雅歌","以赛亚书","耶利米书","耶利米哀歌","以西结书","但以理书","何西阿书","约珥书","阿摩司书",
+"俄巴底亚书","约拿书","弥迦书","那鸿书","哈巴谷书","西番雅书","哈该书","撒迦利亚书","玛拉基书",
+"马太福音","马可福音","路加福音","约翰福音","使徒行传","罗马书","哥林多前书","哥林多后书","加拉太书","以弗所书",
+"腓立比书","歌罗西书","帖撒罗尼迦前书","帖撒罗尼迦后书","提摩太前书","提摩太后书","提多书","腓利门书",
+"希伯来书","雅各书","彼得前书","彼得后书","约翰一书","约翰二书","约翰三书","犹大书","启示录"];
+const ABBR = ["创","出","利","民","申","书","士","得","撒上","撒下","王上","王下","代上","代下","拉","尼","斯","伯","诗","箴",
+"传","歌","赛","耶","哀","结","但","何","珥","摩","俄","拿","弥","鸿","哈","番","该","亚","玛","太","可","路","约",
+"徒","罗","林前","林后","加","弗","腓","西","帖前","帖后","提前","提后","多","门","来","雅","彼前","彼后","约壹","约贰","约叁","犹","启"];
+
+const q = new URLSearchParams(location.search);
+const BUILD='202611201832';
+const WNO = +(q.get('w') || 1168);
+const body = document.getElementById('body'), fEl = document.getElementById('f');
+let D = null, KW = '', LIST = null;
+
+function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function hl(s){ let x = esc(s); return KW ? x.split(KW).join('<em class="kw">'+KW+'</em>') : x; }
+function goRead(b,c,v){
+  location.href = '阅读页.html?b=' + (b+1) + '&c=' + c + '&v=' + v +
+    '&kw=' + encodeURIComponent(KW) + '&from=' + encodeURIComponent(KW);
+}
+function rowsHTML(vs){
+  const g = {};
+  vs.forEach(function(x){ (g[x[0]] = g[x[0]] || []).push(x); });
+  return Object.keys(g).map(Number).sort(function(a,b){ return a - b; }).map(function(bi){
+    const arr = g[bi];
+    return '<section class="grp"><h4>'+BOOK[bi]+'<i>'+arr.length+' 处</i></h4>' +
+      arr.map(function(x){ return '<div class="v" data-b="'+x[0]+'" data-c="'+x[1]+'" data-v="'+x[2]+'">'+
+        '<span class="vr">'+ABBR[x[0]]+' '+x[1]+':'+x[2]+'</span><span class="vt">'+hl(x[3])+'</span>'+
+        '<span class="go">›</span></div>'; }).join('') + '</section>';
+  }).join('') || '<div class="loading">没有匹配的经文</div>';
+}
+
+function paint(pred){
+  LIST.innerHTML = rowsHTML(D.vs.filter(pred || function(){ return true; }));
+  body.scrollTo({top:0, behavior:'smooth'});
+}
+
+function buildFilters(){
+  const arr = [{k:'all',t:'全部 '+D.verses+' 节',on:true},
+               {k:'ot',t:'旧约 '+(D.vot!=null?D.vot:D.verses)+' 节'},
+               {k:'nt',t:'新约 '+(D.vnt!=null?D.vnt:0)+' 节'}];
+  D.senses.forEach(function(s,i){ if(s.refs && s.refs.length) arr.push({k:'s'+(i+1), t:s.k+' '+s.name}); });
+  fEl.innerHTML = arr.map(function(x){
+    return '<div class="fchip'+(x.on?' on':'')+'" data-k="'+x.k+'">'+x.t+'</div>';
+  }).join('');
+  fEl.querySelectorAll('.fchip').forEach(function(ch){
+    ch.onclick = function(){
+      fEl.querySelectorAll('.fchip').forEach(function(x){ x.classList.remove('on'); });
+      ch.classList.add('on');
+      const k = ch.dataset.k;
+      if(k==='all') paint();
+      else if(k==='ot') paint(function(x){ return x[0] < 39; });
+      else if(k==='nt') paint(function(x){ return x[0] >= 39; });
+      else {
+        const set = D.senses[+k.slice(1)-1].refs.map(function(a){ return a.join('-'); });
+        paint(function(x){ return set.indexOf(x[0]+'-'+x[1]+'-'+x[2]) >= 0; });
+      }
+    };
+  });
+}
+
+function paintSenses(){
+  return D.senses.map(function(s){
+    const items = s.refs.map(function(r){
+      const hit = D.vs.find(function(x){ return x[0]===r[0] && x[1]===r[1] && x[2]===r[2]; });
+      const t = hit ? hit[3] : '';
+      return '<div class="sv" data-b="'+r[0]+'" data-c="'+r[1]+'" data-v="'+r[2]+'">'+
+        '<div class="svr">'+BOOK[r[0]]+' '+r[1]+':'+r[2]+'</div><div class="svt">'+hl(t)+'</div></div>';
+    }).join('');
+    return '<div class="sense"><div class="sh"><span class="k">'+s.k+'</span>'+s.name+'</div>'+
+      '<div class="sd">'+s.note+'</div>'+items+'</div>';
+  }).join('');
+}
+
+async function boot(){
+  /* 数据回退链：wordvs 分片(_map 定位) → 旧版单词文件 → 词卡分片 → 明确报错 */
+  let D0 = null;
+  try{
+    let map = null;
+    try{ map = JSON.parse(sessionStorage.getItem('wvmap') || 'null'); }catch(_){}
+    if(!map){
+      try{
+        map = await fetch('data/wordvs/_map.json?v=' + BUILD).then(r=>{ if(!r.ok) throw 0; return r.json(); });
+        try{ sessionStorage.setItem('wvmap', JSON.stringify(map)); }catch(_){}
+      }catch(_){ map = null; }
+    }
+    const sid = map && map[String(WNO)];
+    if(sid){
+      const rows = await fetch('data/wordvs/' + sid + '.json?v=' + BUILD).then(r=>r.json());
+      D0 = rows.find(x => x.no === WNO) || null;
+      if(D0) D0.__src = 'wordvs';
+    }
+  }catch(e){ console.warn('经页分片失败', e); }
+
+  if(!D0){                                        // 回退 1：旧版单词文件
+    try{
+      const r = await fetch('data/words/' + WNO + '.json?v=' + BUILD);
+      if(r.ok){ D0 = await r.json(); D0.__src = 'legacy'; }
+    }catch(_){}
+  }
+  if(!D0){                                        // 回退 2：词卡分片（有节数，无逐节原文）
+    try{
+      const rows = await fetch('data/words/w' + Math.ceil(WNO/100) + '.json?v=' + BUILD).then(r=>r.json());
+      const row = rows.find(x => x.no === WNO);
+      if(row){ D0 = Object.assign({}, row, {vs: [], senses: []}); D0.__src = 'card'; }
+    }catch(_){}
+  }
+  if(!D0){
+    document.body.innerHTML = '<div style="padding:56px 26px;font-family:var(--serif);color:#5D574C;line-height:2">'
+      + '<div style="font-size:17px;letter-spacing:2px;margin-bottom:10px">这一页暂时打不开</div>'
+      + '<div style="font-size:12.5px">没有找到 W' + WNO + ' 的经文数据。<br>可能是数据未更新（旧版本缓存），请刷新后重试。</div>'
+      + '<div style="margin-top:22px"><a href="经库.html" style="display:inline-block;padding:10px 22px;border-radius:999px;'
+      + 'background:#8A6A3B;color:#fff;font-size:12.5px;text-decoration:none">返回迦南</a></div></div>';
+    return;
+  }
+  D = D0; KW = D.w;
+  if(!D.senses) D.senses = [];
+  if(!D.vs) D.vs = [];
+  document.title = '经页 · ' + D.w;
+  document.getElementById('wd').textContent = D.w;
+  document.getElementById('wp').textContent = D.py + ' · ' + D.pos;
+  document.getElementById('wno').textContent = '词卡 W' + D.no;
+  document.getElementById('sum').innerHTML =
+    '<span><b>'+D.freq+'</b>次</span><span><b>'+D.verses+'</b>节</span>'+
+    '<span><b>'+D.vols+'</b>卷</span><span><b>'+D.chaps+'</b>章</span>'+
+    '<span>旧约 '+D.ot+' · 新约 '+D.nt+'</span>';
+  body.innerHTML = '<div class="h2">义项导读</div>' + paintSenses() +
+    '<div class="h2">全部经文 · 按书卷顺序</div><div id="list"></div>' +
+    '<div class="hint">— 共 ' + D.freq + ' 次，逐节取自和合本 —</div>';
+  LIST = document.getElementById('list');
+  LIST.innerHTML = rowsHTML(D.vs);
+  if((!D.vs || !D.vs.length) && D.verses > 0){
+    LIST.insertAdjacentHTML('afterbegin',
+      '<div style="margin:14px 0 4px;padding:12px 14px;border:1px solid #E4DBC9;border-radius:10px;background:#FCF9F2;'
+      + 'font-size:11.5px;line-height:1.8;color:#5D574C">'
+      + '<b style="color:#8A6A3B">经文原文没有载入</b><br>'
+      + '这台设备的部署里缺少 <code>data/wordvs</code> 目录（共 376 个文件、约 33 MB）。<br>'
+      + '请重新部署完整包，或先把 <code>data/wordvs</code> 整个目录复制到 <code>app/data/</code> 下。<br>'
+      + '自检：浏览器打开 <code>/data/wordvs/_map.json</code>，能看到 JSON 即为正常。</div>');
+  }
+  buildFilters();
+  body.addEventListener('click', function(e){
+    const el = e.target.closest('.sv') || e.target.closest('.v');
+    if(!el) return;
+    goRead(+el.dataset.b, +el.dataset.c, +el.dataset.v);
+  });
+}
+
+document.getElementById('back').onclick = function(){
+  location.href = '经库.html?card=word&wno=' + WNO;
+};
+
+/* 筛选条：鼠标拖拽 / 滚轮 */
+(function(){
+  const strip = fEl; let st = null, moved = false;
+  strip.addEventListener('pointerdown', function(e){
+    if(e.pointerType === 'touch') return;
+    st = {x:e.clientX, left:strip.scrollLeft, id:e.pointerId}; moved = false;
+  });
+  strip.addEventListener('pointermove', function(e){
+    if(!st) return;
+    const dx = e.clientX - st.x;
+    if(!moved && Math.abs(dx) > 4){ moved = true; strip.classList.add('grabbing');
+      try{ strip.setPointerCapture(st.id); }catch(_){} }
+    if(moved) strip.scrollLeft = st.left - dx;
+  });
+  function end(){ if(!st) return; st = null; strip.classList.remove('grabbing');
+    if(moved) setTimeout(function(){ moved = false; }, 0); }
+  ['pointerup','pointercancel','pointerleave'].forEach(function(ev){ strip.addEventListener(ev, end); });
+  strip.addEventListener('click', function(e){ if(moved){ e.preventDefault(); e.stopPropagation(); moved = false; } }, true);
+  strip.addEventListener('wheel', function(e){
+    if(Math.abs(e.deltaY) > Math.abs(e.deltaX)){ strip.scrollLeft += e.deltaY; e.preventDefault(); }
+  }, {passive:false});
+})();
+
+document.querySelectorAll('#tabbar .tab').forEach(function(t){
+  t.onclick = function(){ if(t.classList.contains('on')) return; location.href = t.dataset.href; };
+});
+
+boot();
+</script>
+<style>html.embed .tabbar{display:none!important}html.embed .status{display:none!important}</style><script>if(window.name==="xj-embed"||/[?&]embed=1/.test(location.search))document.documentElement.classList.add("embed");</script>
+<script id="tab-class">(function(){function set(){var w=window.innerWidth,h=window.innerHeight;var r=document.documentElement;r.classList.toggle("tab-wide",w>=560);r.classList.toggle("tab-tall",w>=560&&h>=900);}set();window.addEventListener("resize",set);window.addEventListener("orientationchange",function(){setTimeout(set,120);});})();</script>
+</body>
+</html>

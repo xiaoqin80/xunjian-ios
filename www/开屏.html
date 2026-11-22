@@ -1,0 +1,41 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>寻见 · 开屏</title>
+<style>
+:root{--ink:#26231E;--brass:#B5924F;--paper:#F7F2E8;--serif:"Noto Serif SC",STSong,"Songti SC",serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:#141210;display:flex;justify-content:center;align-items:center;overflow:hidden}
+.splash{position:relative;width:100%;max-width:430px;height:100vh;height:100dvh;
+background:radial-gradient(120% 90% at 50% 42%,#2A2620 0%,#1D1A16 46%,#12100E 100%);
+display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;overflow:hidden}
+/* 极淡的纸纹光晕 */
+.splash:before{content:"";position:absolute;inset:0;background:
+radial-gradient(60% 40% at 50% 44%,rgba(181,146,79,.10),transparent 70%);pointer-events:none}
+.cross{width:84px;height:112px;position:relative;z-index:2}
+.cross path{fill:none;stroke:var(--brass);stroke-width:1.15;stroke-linecap:round;
+stroke-dasharray:120;stroke-dashoffset:120;animation:draw 900ms cubic-bezier(.4,.1,.2,1) 120ms forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.word{margin-top:34px;font-family:var(--serif);font-size:15px;letter-spacing:7px;text-indent:7px;
+color:#E9DFC9;opacity:0;animation:fade 700ms ease-out 820ms forwards;z-index:2}
+.rule{width:34px;height:1px;background:linear-gradient(90deg,transparent,rgba(181,146,79,.75),transparent);
+margin-top:16px;opacity:0;animation:fade 700ms ease-out 980ms forwards;z-index:2}
+@keyframes fade{to{opacity:1}}
+.ver{position:absolute;bottom:calc(26px + env(safe-area-inset-bottom));font-size:9.5px;letter-spacing:2px;
+color:rgba(233,223,201,.32);z-index:2}
+</style><style id="hard-css">
+/* 全局防压缩：文字永不逐字换行（部分 WebView 会把容器算窄） */
+html,body{-webkit-text-size-adjust:100%!important;text-size-adjust:100%!important}
+.tab span,.chip,.tagline .tw,.swipe span{white-space:nowrap!important}
+</style>
+</head><body>
+<div class="splash">
+  <svg class="cross" viewBox="0 0 24 32" aria-label="十字架">
+    <path d="M12 3v26"/>
+    <path d="M4.6 11.5h14.8"/>
+  </svg>
+  <div class="word">寻求.就寻见</div>
+  <div class="rule"></div>
+  <div class="ver">寻见</div>
+</div>
+</body></html>

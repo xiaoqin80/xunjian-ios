@@ -1,0 +1,31 @@
+{
+ "name": "寻见",
+ "short_name": "寻见",
+ "description": "内容取自和合本圣经 66 卷：字卡 · 经库 · 敬拜 · 圣殿",
+ "lang": "zh-CN",
+ "dir": "ltr",
+ "start_url": "shell.html",
+ "scope": "./",
+ "display": "standalone",
+ "orientation": "portrait",
+ "background_color": "#F7F2E8",
+ "theme_color": "#F7F2E8",
+ "icons": [
+  {
+   "src": "icons/icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  },
+  {
+   "src": "icons/icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png"
+  },
+  {
+   "src": "icons/icon-512-maskable.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ]
+}

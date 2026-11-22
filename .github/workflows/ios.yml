@@ -1,0 +1,44 @@
+name: build-ios-ipa
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 安装依赖
+        run: npm install
+
+      - name: 生成 iOS 工程
+        run: npx cap add ios || true
+
+      - name: 同步 Web 资源
+        run: npx cap sync ios
+
+      - name: 构建（不签名）
+        run: |
+          cd ios/App
+          xcodebuild -workspace App.xcworkspace -scheme App -configuration Release \
+            -sdk iphoneos -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
+            | tail -40
+
+      - name: 打包 ipa
+        run: |
+          mkdir -p out/Payload
+          cp -R ios/App/build/Build/Products/Release-iphoneos/App.app out/Payload/
+          cd out && zip -qry ../xunjian-unsigned.ipa Payload
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xunjian-ipa
+          path: xunjian-unsigned.ipa

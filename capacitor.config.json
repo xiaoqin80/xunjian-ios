@@ -1,0 +1,13 @@
+{
+  "appId": "com.xunjian.app",
+  "appName": "寻见",
+  "webDir": "www",
+  "ios": {
+    "contentInset": "never",
+    "limitsNavigationsToAppBoundDomains": false
+  },
+  "server": {
+    "androidScheme": "https",
+    "iosScheme": "capacitor"
+  }
+}
