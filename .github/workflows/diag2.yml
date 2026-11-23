@@ -1,0 +1,16 @@
+name: diag2
+on:
+  workflow_dispatch:
+jobs:
+  m13:
+    runs-on: macos-13
+    steps:
+      - run: echo "13 ok"
+  m14:
+    runs-on: macos-14
+    steps:
+      - run: echo "14 ok"
+  m15:
+    runs-on: macos-15
+    steps:
+      - run: echo "15 ok"
